@@ -10,9 +10,9 @@ public class Board {
     public static final int NUMBER_OF_MINES = 30;
 
     private ArrayList<ArrayList<Square>> board; // Each ArrayList<Square> within the ArrayList
-                                                     // represents a column.
+                                                // represents a column.
 
-    // EFFECTS: constructs a board
+    // EFFECTS: constructs a board in the form of an ArrayList of ArrayLists
     public Board() {
         this.board = new ArrayList<>();
     }
@@ -49,138 +49,65 @@ public class Board {
     }
 
     // MODIFIES: this
-    // EFFECTS: changes selected square from covered to uncovered. If square has no adjacent mines, uncovers
-    //          all surrounding squares that are still covered.
+    // EFFECTS: if selected square is covered, uncover it. If square has no adjacent mines, uncovers all
+    //          surrounding squares that are still covered.
     public void uncoverSquare(int x, int y) {
         if (this.getCoveredStatusByCoordinates(x, y)) {
             this.getSquareByCoordinates(x, y).setCoveredStatus();
 
-            if (allAdjacentSquaresNoMine(x, y)) {
+            if (this.allAdjacentSquaresNoMine(x, y) && !this.getMineStatusByCoordinates(x, y)) {
                 this.uncoverSurroundingSquares(x, y);
             }
         }
     }
 
-    private void uncoverSurroundingSquares(int x, int y) {
-        if (x == 0 && y == 0) {
-            this.uncoverSurroundingSquaresBottomLeft();
-        } else if (x == 0 && y == Y_DIMENSION - 1) {
-            this.uncoverSurroundingSquaresTopLeft();
-        } else if (x == X_DIMENSION - 1 && y == Y_DIMENSION - 1) {
-            this.uncoverSurroundingSquaresTopRight();
-        } else if (x == X_DIMENSION - 1 && y == 0) {
-            this.uncoverSurroundingSquaresBottomRight();
-        } else if (x == 0) {
-            this.uncoverSurroundingSquaresLeft(y);
-        } else if (y == 0) {
-            this.uncoverSurroundingSquaresBottom(x);
-        } else if (x == X_DIMENSION - 1) {
-            this.uncoverSurroundingSquaresRight(y);
-        } else if (y == Y_DIMENSION - 1) {
-            this.uncoverSurroundingSquaresTop(x);
-        } else {
-            this.uncoverSurroundingSquaresMiddle(x, y);
+    // EFFECTS: uncovers all squares surrounding the one given by its coordinates
+    public void uncoverSurroundingSquares(int x, int y) {
+        // loop over all adjacent squares
+        for (int dx = -1; dx <= 1; dx++) {
+            for (int dy = -1; dy <= 1; dy++) {
+                if (dx == 0 && dy == 0) {
+                    continue;
+                }
+                int nextX = x + dx;
+                int nextY = y + dy;
+                if (nextX < 0 || nextX >= X_DIMENSION) {
+                    continue;
+                }
+                if (nextY < 0 || nextY >= Y_DIMENSION) {
+                    continue;
+                }
+                if (board.get(nextX).get(nextY).covered) {
+                    this.uncoverSquare(nextX, nextY);
+                }
+            }
         }
-    }
-
-    private void uncoverSurroundingSquaresTopLeft() {
-    }
-
-    private void uncoverSurroundingSquaresBottomLeft() {
-    }
-
-    private void uncoverSurroundingSquaresTopRight() {
-    }
-
-    private void uncoverSurroundingSquaresBottomRight() {
-    }
-
-    private void uncoverSurroundingSquaresLeft(int y) {
-    }
-
-    private void uncoverSurroundingSquaresBottom(int x) {
-    }
-
-    private void uncoverSurroundingSquaresRight(int y) {
-    }
-
-    private void uncoverSurroundingSquaresTop(int x) {
-    }
-
-    private void uncoverSurroundingSquaresMiddle(int x, int y) {
     }
 
     // EFFECTS: returns true if all surrounding squares around the square at the given coordinates have
-    //          no mines, using nine different helpers
+    //          no mines
     public boolean allAdjacentSquaresNoMine(int x, int y) {
-        if (x == 0 && y == 0) {
-            return allAdjacentSquaresNoMineBottomLeft();
-        } else if (x == 0 && y == Y_DIMENSION - 1) {
-            return allAdjacentSquaresNoMineTopLeft();
-        } else if (x == X_DIMENSION - 1 && y == Y_DIMENSION - 1) {
-            return allAdjacentSquaresNoMineTopRight();
-        } else if (x == X_DIMENSION - 1 && y == 0) {
-            return allAdjacentSquaresNoMineBottomRight();
-        } else if (x == 0) {
-            return allAdjacentSquaresNoMineLeft(y);
-        } else if (y == 0) {
-            return allAdjacentSquaresNoMineBottom(x);
-        } else if (x == X_DIMENSION - 1) {
-            return allAdjacentSquaresNoMineRight(y);
-        } else if (y == Y_DIMENSION - 1) {
-            return allAdjacentSquaresNoMineTop(x);
-        } else {
-            return allAdjacentSquaresNoMineMiddle(x, y);
+        // similar for loop as uncoverSurroundingSquares
+        for (int dx = -1; dx <= 1; dx++) {
+            for (int dy = -1; dy <= 1; dy++) {
+                if (dx == 0 && dy == 0) {
+                    continue;
+                }
+                int nextX = x + dx;
+                int nextY = y + dy;
+                if (nextX < 0 || nextX >= X_DIMENSION) {
+                    continue;
+                }
+                if (nextY < 0 || nextY >= Y_DIMENSION) {
+                    continue;
+                }
+                if (board.get(nextX).get(nextY).containsMine) {
+                    return false;
+                }
+            }
         }
-    }
 
-    // EFFECTS: returns true if all surrounding squares around the square at the top right corner have
-    //          no mines
-    public boolean allAdjacentSquaresNoMineTopRight() {
-        return false;
-    }
-
-    // EFFECTS: returns true if all surrounding squares around the square at the top left corner have
-    //          no mines
-    public boolean allAdjacentSquaresNoMineTopLeft() {
-        return false;
-    }
-
-    // EFFECTS: returns true if all surrounding squares around the square at the bottom right corner have
-    //          no mines
-    public boolean allAdjacentSquaresNoMineBottomRight() {
-        return false;
-    }
-
-    // EFFECTS: returns true if all surrounding squares around the square at the bottom left corner have
-    //          no mines
-    public boolean allAdjacentSquaresNoMineBottomLeft() {
-        return false;
-    }
-
-    // EFFECTS: returns true if all surrounding squares around the square at the top edge have no mines
-    public boolean allAdjacentSquaresNoMineTop(int x) {
-        return false;
-    }
-
-    // EFFECTS: returns true if all surrounding squares around the square at the bottom edge have no mines
-    public boolean allAdjacentSquaresNoMineBottom(int x) {
-        return false;
-    }
-
-    // EFFECTS: returns true if all surrounding squares around the square at the left edge have no mines
-    public boolean allAdjacentSquaresNoMineLeft(int y) {
-        return false;
-    }
-
-    // EFFECTS: returns true if all surrounding squares around the square at the right edge have no mines
-    public boolean allAdjacentSquaresNoMineRight(int y) {
-        return false;
-    }
-
-    // EFFECTS: returns true if all surrounding squares around the square in the middle have no mines
-    public boolean allAdjacentSquaresNoMineMiddle(int x, int y) {
-        return false;
+        return true;
     }
 
     // MODIFIES: this
