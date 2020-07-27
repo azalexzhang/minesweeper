@@ -18,7 +18,8 @@ I used to often play this game during the Windows 7 years, when Minesweeper came
 wasn't very good), and figured that it would be fairly easy to implement in Java.
 
 **User Stories**  
-- As a user, I want to be able to choose a difficulty level.
+- As a user, I want to be able to choose a difficulty level. (For the purposes of simplicity, this may be
+implemented in a future phase of the project.)
 - As a user, I want to be able to select a square and clear it.
 - As a user, I want to be able to "flag" a square I believe holds a mine.
 - As a user, I want to be able to save my score to a leaderboard.
