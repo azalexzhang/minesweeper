@@ -5,9 +5,9 @@ import java.util.Random;
 
 // Represents the Minesweeper board.
 public class Board {
-    public static final int X_DIMENSION = 16;
-    public static final int Y_DIMENSION = 16;
-    public static final int NUMBER_OF_MINES = 30;
+    public static final int X_DIMENSION = 9;
+    public static final int Y_DIMENSION = 9;
+    public static final int NUMBER_OF_MINES = 9;
 
     private ArrayList<ArrayList<Square>> board; // Each ArrayList<Square> within the ArrayList
                                                 // represents a column.
@@ -19,27 +19,26 @@ public class Board {
 
     // MODIFIES: this
     // EFFECTS: generates new board of dimensions X_DIMENSION by Y_DIMENSION
-    public void generateBoard() throws Exception {
+    public void generateBoard() {
         Random random = new Random();
-        ArrayList<Square> arr = new ArrayList<>();
-        int mines = 0;
 
-        for (int i = 0; i < X_DIMENSION; i++) {
-            for (int j = 0; j < Y_DIMENSION; j++) {
-                if (mines < NUMBER_OF_MINES && random.nextBoolean()) {
-                    arr.add(new Square(true, true, false));
-                    mines++;
-                } else {
-                    arr.add(new Square(false, true, false));
-                }
+        for (int j = 0; j < X_DIMENSION; j++) {
+            ArrayList<Square> arr = new ArrayList<>();
+            for (int k = 0; k < Y_DIMENSION; k++) {
+                arr.add(new Square(false, true, false));
             }
 
             board.add(arr);
-            arr = new ArrayList<>();
         }
 
-        if (mines != NUMBER_OF_MINES) {
-            throw new Exception();
+        for (int i = 1; i <= NUMBER_OF_MINES; i++) {
+            int x = random.nextInt(X_DIMENSION);
+            int y = random.nextInt(Y_DIMENSION);
+            while (this.getSquareByCoordinates(x, y).getContainsMine()) {
+                x = random.nextInt(X_DIMENSION);
+                y = random.nextInt(Y_DIMENSION);
+            }
+            this.getSquareByCoordinates(x, y).setContainsMine();
         }
     }
 
@@ -110,10 +109,37 @@ public class Board {
         return true;
     }
 
+    // EFFECTS: returns the number of surrounding mines
+    public int getSurroundingMines(int x, int y) {
+        int mines = 0;
+        for (int dx = -1; dx <= 1; dx++) {
+            for (int dy = -1; dy <= 1; dy++) {
+                if (dx == 0 && dy == 0) {
+                    continue;
+                }
+                int nextX = x + dx;
+                int nextY = y + dy;
+                if (nextX < 0 || nextX >= X_DIMENSION) {
+                    continue;
+                }
+                if (nextY < 0 || nextY >= Y_DIMENSION) {
+                    continue;
+                }
+                if (board.get(nextX).get(nextY).containsMine) {
+                    mines++;
+                }
+            }
+        }
+
+        return mines;
+    }
+
     // MODIFIES: this
     // EFFECTS: flags selected square to indicate mine location
     public void flagSquare(int x, int y) {
-        this.getSquareByCoordinates(x, y).setFlaggedStatus(!this.getFlaggedStatusByCoordinates(x, y));
+        if (this.getCoveredStatusByCoordinates(x, y)) {
+            this.getSquareByCoordinates(x, y).setFlaggedStatus(!this.getFlaggedStatusByCoordinates(x, y));
+        }
     }
 
     // EFFECTS: returns x-dimension of board
@@ -170,16 +196,24 @@ public class Board {
             return covered;
         }
 
+        // EFFECTS: returns true if square is flagged; false otherwise
         private boolean getFlaggedStatus() {
             return flagged;
         }
 
+        // EFFECTS: if the square's covered status is true, changes to false
         private void setCoveredStatus() {
             this.covered = false;
         }
 
+        // EFFECTS: sets flagged status to boolean value passed as parameter
         private void setFlaggedStatus(boolean flaggedStatus) {
             this.flagged = flaggedStatus;
+        }
+
+        // EFFECTS: if false, sets mine status to true
+        private void setContainsMine() {
+            this.containsMine = true;
         }
     }
 }
