@@ -93,9 +93,8 @@ public class Minesweeper {
             displayBoard();
             System.out.println("Press 1 to uncover and 2 to flag.");
             String uf = input.next();
-            System.out.print("Enter the x-coordinate of the square you want to modify: ");
+            System.out.print("Enter the x- and y-coordinate of the square you want to modify: ");
             int xxCoord = Integer.parseInt(input.next());
-            System.out.print("Enter the y-coordinate of the square you want to modify: ");
             int yyCoord = Integer.parseInt(input.next());
             gameOver = modifySelectedSquare(uf, xxCoord, yyCoord);
         }
