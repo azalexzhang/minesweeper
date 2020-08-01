@@ -1,14 +1,8 @@
 package ui;
 
 import model.Board;
+import model.Leaderboard;
 
-import java.io.FileWriter;
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.io.FileReader;
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.util.ArrayList;
 import java.util.Scanner;
 
 import static model.Board.*;
@@ -16,8 +10,7 @@ import static model.Board.*;
 // Stores data about the current game being played. The design of this UI class is relatively similar to
 // the TellerApp program.
 public class Minesweeper {
-    private static final String LEADERBOARD_FILE = "./data/leaderboard.txt";
-    private static final int MAX_LEADERBOARD_SIZE = 50;
+    private Leaderboard leaderboard;
     private Board board;
     private Scanner input;
 
@@ -31,6 +24,7 @@ public class Minesweeper {
     private void runMinesweeper() {
         boolean keepGoing = true;
         input = new Scanner(System.in);
+        leaderboard = new Leaderboard();
         String in;
 
         while (keepGoing) {
@@ -74,7 +68,7 @@ public class Minesweeper {
         if (in.equalsIgnoreCase("P")) {
             runGame();
         } else if (in.equalsIgnoreCase("L")) {
-            viewLeaderboard();
+            leaderboard.viewLeaderboard();
         } else {
             System.out.println("Invalid input, please try again.\n");
         }
@@ -93,7 +87,7 @@ public class Minesweeper {
             displayBoard();
             System.out.println("Press 1 to uncover and 2 to flag.");
             String uf = input.next();
-            System.out.print("Enter the x- and y-coordinate of the square you want to modify: ");
+            System.out.print("Enter the x- and y-coordinates of the square you want to modify: ");
             int xxCoord = Integer.parseInt(input.next());
             int yyCoord = Integer.parseInt(input.next());
             gameOver = modifySelectedSquare(uf, xxCoord, yyCoord);
@@ -105,7 +99,7 @@ public class Minesweeper {
         if (gameWon()) {
             System.out.println("Your time is: " + timeElapsed + " seconds");
             try {
-                addScoreToLeaderboard(timeElapsed);
+                leaderboard.addScoreToLeaderboard(timeElapsed);
             } catch (Exception e) {
                 System.err.println("Encountered exception: " + e.getMessage());
             }
@@ -145,9 +139,11 @@ public class Minesweeper {
                 System.out.print(". ");
             }
         } else if (board.getMineStatusByCoordinates(x, y)) {
-            System.out.print("* ");
-        } else {
+            System.out.print("X ");
+        } else if (board.getSurroundingMines(x, y) > 0) {
             System.out.print(board.getSurroundingMines(x, y) + " ");
+        } else {
+            System.out.print("* ");
         }
     }
 
@@ -197,7 +193,8 @@ public class Minesweeper {
         return uncovered == X_DIMENSION * Y_DIMENSION - NUMBER_OF_MINES;
     }
 
-    private int getLeaderboardIndex(ArrayList<Long> scores, long timeElapsed) {
+    // Code from here should be moved to Leaderboard.java.
+    /*private int getLeaderboardIndex(ArrayList<Long> scores, long timeElapsed) {
         for (long s : scores) {
             if (timeElapsed < s) {
                 return scores.indexOf(s);
@@ -219,14 +216,19 @@ public class Minesweeper {
         BufferedReader buffer = new BufferedReader(file);
         ArrayList<Long> scores = new ArrayList<>();
         String scoreEntry = buffer.readLine();
+
         while (scoreEntry != null) {
             scores.add(Long.parseLong(scoreEntry));
             scoreEntry = buffer.readLine();
         }
+
         buffer.close();
         file.close();
+
         int index = getLeaderboardIndex(scores, timeElapsed);
+
         if (index != -1) {
+            System.out.println("NEW HIGH SCORE!");
             scores.add(index, timeElapsed);
             if (scores.size() > MAX_LEADERBOARD_SIZE) {
                 scores.remove(scores.size() - 1);
@@ -264,15 +266,16 @@ public class Minesweeper {
             FileReader file = new FileReader(LEADERBOARD_FILE);
             BufferedReader buffer = new BufferedReader(file);
             ArrayList<String> scores = new ArrayList<>();
-            String scoreEntry = "";
+            String scoreEntry = buffer.readLine();
 
             while (scoreEntry != null) {
                 scores.add(scoreEntry);
                 scoreEntry = buffer.readLine();
             }
 
+            System.out.println("\nHIGH SCORES");
             for (String s : scores) {
-                System.out.println(s);
+                System.out.println((scores.indexOf(s) + 1) + ". " + s + " seconds");
             }
 
             buffer.close();
@@ -284,5 +287,5 @@ public class Minesweeper {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
+    }*/
 }
