@@ -1,12 +1,13 @@
 package model;
 
-import java.io.FileWriter;
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.io.FileReader;
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
+import java.io.*;
 import java.util.ArrayList;
+import java.util.List;
+
+import persistence.*;
+import persistence.Reader;
+
+import static persistence.Reader.readLeaderboard;
 
 // Represents a leaderboard with high scores
 public class Leaderboard {
@@ -19,6 +20,8 @@ public class Leaderboard {
         scores = new ArrayList<>();
     }
 
+    // EFFECTS: gets the index in the leaderboard where the new score should be added;
+    //          if not a new high score, returns -1
     public int getLeaderboardIndex(ArrayList<Long> scores, long timeElapsed) {
         for (long s : scores) {
             if (timeElapsed < s) {
@@ -86,22 +89,10 @@ public class Leaderboard {
     // EFFECTS: displays current leaderboard
     public void viewLeaderboard() {
         try {
-            FileReader file = new FileReader(LEADERBOARD_FILE);
-            BufferedReader buffer = new BufferedReader(file);
-            String scoreEntry = buffer.readLine();
-
-            while (scoreEntry != null) {
-                scores.add(Long.parseLong(scoreEntry));
-                scoreEntry = buffer.readLine();
-            }
-
-            System.out.println("\nHIGH SCORES");
+            List<Long> scores = readLeaderboard(new File(LEADERBOARD_FILE));
             for (long s : scores) {
                 System.out.println((scores.indexOf(s) + 1) + ". " + s + " seconds");
             }
-
-            buffer.close();
-            file.close();
         } catch (FileNotFoundException e) {
             System.out.println("FileNotFoundException: " + e.getMessage());
         } catch (IOException e) {
