@@ -22,5 +22,8 @@ wasn't very good), and figured that it would be fairly easy to implement in Java
 implemented in a future phase of the project.)
 - As a user, I want to be able to select a square and clear it.
 - As a user, I want to be able to "flag" a square I believe holds a mine.
+
+*The following two user stories were already implemented in Phase 1, but I am working on improving the
+mechanics for Phase 2.*
 - As a user, I want to be able to save my score to a leaderboard.
 - As a user, I want to be able to view the leaderboard.
