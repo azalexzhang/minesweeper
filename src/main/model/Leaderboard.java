@@ -1,11 +1,11 @@
 package model;
 
-import java.io.*;
+import persistence.Writer;
+
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-
-import persistence.Saveable;
-import persistence.Writer;
 
 import static persistence.Reader.readLeaderboard;
 
@@ -36,12 +36,8 @@ public class Leaderboard {
     }
 
     // EFFECTS: adds score (in time elapsed) to leaderboard if the time is low enough
-    public void addScoreToLeaderboard(long timeElapsed) {
-        try {
-            scores = readLeaderboard(new File(LEADERBOARD_FILE));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    public void addScoreToLeaderboard(long timeElapsed) throws IOException {
+        scores = readLeaderboard(new File(LEADERBOARD_FILE));
 
         int index = getLeaderboardIndex(scores, timeElapsed);
 
@@ -56,18 +52,14 @@ public class Leaderboard {
     }
 
     // EFFECTS: writes all leaderboard data back to the file that stores them
-    public void writeScoresToFile() {
-        try {
-            Writer writer = new Writer(new File(LEADERBOARD_FILE));
+    public void writeScoresToFile() throws IOException {
+        Writer writer = new Writer(new File(LEADERBOARD_FILE));
 
-            for (long s : scores) {
-                writer.write(s);
-            }
-
-            writer.close();
-        } catch (IOException e) {
-            e.printStackTrace();
+        for (long s : scores) {
+            writer.write(s);
         }
+
+        writer.close();
     }
 
     // EFFECTS: returns leaderboard scores

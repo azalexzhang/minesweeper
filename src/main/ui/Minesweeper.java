@@ -68,7 +68,11 @@ public class Minesweeper {
     // EFFECTS: processes user input
     private void processInput(String in) {
         if (in.equalsIgnoreCase("P")) {
-            runGame();
+            try {
+                runGame();
+            } catch (IOException e) {
+                System.out.println("ERROR\n" + e);
+            }
         } else if (in.equalsIgnoreCase("L")) {
             viewLeaderboard();
         } else {
@@ -78,7 +82,7 @@ public class Minesweeper {
 
     // MODIFIES: this
     // EFFECTS: runs a Minesweeper game
-    private void runGame() {
+    private void runGame() throws IOException {
         board = new Board();
         boolean gameOver = false;
         long start = System.nanoTime();
@@ -101,6 +105,8 @@ public class Minesweeper {
 
         if (gameWon()) {
             System.out.println("Your time is: " + timeElapsed + " seconds");
+            // I wanted to put the try/catch block around the following statement, but checkstyle won't
+            // let me due to the line limit.
             leaderboard.addScoreToLeaderboard(timeElapsed);
         }
     }
