@@ -42,7 +42,6 @@ public class Leaderboard {
         int index = getLeaderboardIndex(scores, timeElapsed);
 
         if (index != -1) {
-            System.out.println("NEW HIGH SCORE!");
             scores.add(index, timeElapsed);
             if (scores.size() > MAX_LEADERBOARD_SIZE) {
                 scores.remove(scores.size() - 1);
