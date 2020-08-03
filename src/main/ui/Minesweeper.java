@@ -201,7 +201,7 @@ public class Minesweeper {
     private void viewLeaderboard() {
         System.out.println("\nHIGH SCORES");
         try {
-            List<Long> scores = leaderboard.getLeaderboard();
+            List<Long> scores = leaderboard.getLeaderboard("./data/testAddScoreToLeaderboardNotFull.txt");
 
             for (long s : scores) {
                 System.out.println((scores.indexOf(s) + 1) + ". " + s + " seconds");

@@ -63,7 +63,7 @@ public class Leaderboard {
     }
 
     // EFFECTS: returns leaderboard scores
-    public List<Long> getLeaderboard() throws IOException {
-        return readLeaderboard(new File(LEADERBOARD_FILE));
+    public List<Long> getLeaderboard(String leaderboardFile) throws IOException {
+        return readLeaderboard(new File(leaderboardFile));
     }
 }
