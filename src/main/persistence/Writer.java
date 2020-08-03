@@ -1,29 +1,31 @@
 package persistence;
 
+import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.PrintWriter;
-import java.io.UnsupportedEncodingException;
+import java.io.FileWriter;
+import java.io.IOException;
 
-// A writer that writes leaderboard data to a file. The Writer.java code was taken from the TellerApp
-// project.
+// A writer that writes leaderboard data to a file. The Writer.java code was designed in a similar
+// way to the TellerApp project, but uses FileWriter and BufferedWriter instead.
 public class Writer {
-    private PrintWriter printWriter;
+    private FileWriter fileWriter;
+    private BufferedWriter bufferedWriter;
 
     // EFFECTS: constructs a writer that will write data to a file
-    public Writer(File file) throws FileNotFoundException, UnsupportedEncodingException {
-        printWriter = new PrintWriter(file, "UTF-8");
+    public Writer(File file) throws IOException {
+        fileWriter = new FileWriter(file);
+        bufferedWriter = new BufferedWriter(fileWriter);
     }
 
-    // MODIFIES: this
-    // EFFECTS: writes saveable to file
-    public void write(Saveable saveable) {
-        saveable.save(printWriter);
+    public void write(long l) throws IOException {
+        bufferedWriter.write(String.valueOf(l));
+        bufferedWriter.newLine();
     }
 
     // MODIFIES: this
     // EFFECTS: closes PrintWriter
-    public void close() {
-        printWriter.close();
+    public void close() throws IOException {
+        bufferedWriter.close();
+        fileWriter.close();
     }
 }

@@ -4,8 +4,8 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import persistence.*;
-import persistence.Reader;
+import persistence.Saveable;
+import persistence.Writer;
 
 import static persistence.Reader.readLeaderboard;
 
@@ -14,7 +14,7 @@ public class Leaderboard {
     private static final String LEADERBOARD_FILE = "./data/leaderboard.txt";
     private static final int MAX_LEADERBOARD_SIZE = 10;
 
-    private ArrayList<Long> scores;
+    private List<Long> scores;
 
     public Leaderboard() {
         scores = new ArrayList<>();
@@ -22,7 +22,7 @@ public class Leaderboard {
 
     // EFFECTS: gets the index in the leaderboard where the new score should be added;
     //          if not a new high score, returns -1
-    public int getLeaderboardIndex(ArrayList<Long> scores, long timeElapsed) {
+    public int getLeaderboardIndex(List<Long> scores, long timeElapsed) {
         for (long s : scores) {
             if (timeElapsed < s) {
                 return scores.indexOf(s);
@@ -36,21 +36,12 @@ public class Leaderboard {
     }
 
     // EFFECTS: adds score (in time elapsed) to leaderboard if the time is low enough
-    // ** I took a Java programming related class in grade 12, and this method uses similar mechanisms to
-    // what I was taught in that class. An example here:
-    // https://repl.it/@AlexZhang/WritingDatatoaFile#Main.java
-    public void addScoreToLeaderboard(long timeElapsed) throws Exception {
-        FileReader file = new FileReader(LEADERBOARD_FILE);
-        BufferedReader buffer = new BufferedReader(file);
-        String scoreEntry = buffer.readLine();
-
-        while (scoreEntry != null) {
-            scores.add(Long.parseLong(scoreEntry));
-            scoreEntry = buffer.readLine();
+    public void addScoreToLeaderboard(long timeElapsed) {
+        try {
+            scores = readLeaderboard(new File(LEADERBOARD_FILE));
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-
-        buffer.close();
-        file.close();
 
         int index = getLeaderboardIndex(scores, timeElapsed);
 
@@ -67,38 +58,20 @@ public class Leaderboard {
     // EFFECTS: writes all leaderboard data back to the file that stores them
     public void writeScoresToFile() {
         try {
-            FileWriter file = new FileWriter(LEADERBOARD_FILE);
-            BufferedWriter buffer = new BufferedWriter(file);
+            Writer writer = new Writer(new File(LEADERBOARD_FILE));
 
             for (long s : scores) {
-                buffer.write(String.valueOf(s), 0, String.valueOf(s).length());
-                buffer.newLine();
+                writer.write(s);
             }
 
-            buffer.close();
-            file.close();
-        } catch (FileNotFoundException e) {
-            System.out.println("FileNotFoundException: " + e.getMessage());
+            writer.close();
         } catch (IOException e) {
-            System.out.println("IOException: " + e.getMessage());
-        } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    // EFFECTS: displays current leaderboard
-    public void viewLeaderboard() {
-        try {
-            List<Long> scores = readLeaderboard(new File(LEADERBOARD_FILE));
-            for (long s : scores) {
-                System.out.println((scores.indexOf(s) + 1) + ". " + s + " seconds");
-            }
-        } catch (FileNotFoundException e) {
-            System.out.println("FileNotFoundException: " + e.getMessage());
-        } catch (IOException e) {
-            System.out.println("IOException: " + e.getMessage());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    // EFFECTS: returns leaderboard scores
+    public List<Long> getLeaderboard() throws IOException {
+        return readLeaderboard(new File(LEADERBOARD_FILE));
     }
 }

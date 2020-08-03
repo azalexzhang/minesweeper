@@ -3,6 +3,8 @@ package ui;
 import model.Board;
 import model.Leaderboard;
 
+import java.io.IOException;
+import java.util.List;
 import java.util.Scanner;
 
 import static model.Board.*;
@@ -32,7 +34,7 @@ public class Minesweeper {
             displayMenu();
             in = input.next();
 
-            if (in.equalsIgnoreCase("q")) {
+            if (in.equalsIgnoreCase("Q")) {
                 keepGoing = false;
             } else {
                 processInput(in);
@@ -50,7 +52,7 @@ public class Minesweeper {
         System.out.println("- You can either select a square to uncover it, or flag it to indicate the"
                 + " location of a mine.");
         System.out.println("- You must enter the coordinates of the square you want to uncover or flag."
-                + "\nFor example, the square on the bottom left corner has coordinates (0, 0).");
+                + "\nFor example, the square on the BOTTOM LEFT corner has coordinates (0, 0).");
         System.out.println("- If you manage to clear all squares that don't hold a mine, you win the game."
                 + "\nIf you uncover a square that holds a mine, however, the game is over!\n");
     }
@@ -68,7 +70,7 @@ public class Minesweeper {
         if (in.equalsIgnoreCase("P")) {
             runGame();
         } else if (in.equalsIgnoreCase("L")) {
-            leaderboard.viewLeaderboard();
+            viewLeaderboard();
         } else {
             System.out.println("Invalid input, please try again.\n");
         }
@@ -87,8 +89,9 @@ public class Minesweeper {
             displayBoard();
             System.out.println("Press 1 to uncover and 2 to flag.");
             String uf = input.next();
-            System.out.print("Enter the x- and y-coordinates of the square you want to modify: ");
+            System.out.print("Enter the x-coordinate of the square you want to modify: ");
             int xxCoord = Integer.parseInt(input.next());
+            System.out.print("Enter the y-coordinate of the square you want to modify: ");
             int yyCoord = Integer.parseInt(input.next());
             gameOver = modifySelectedSquare(uf, xxCoord, yyCoord);
         }
@@ -98,11 +101,7 @@ public class Minesweeper {
 
         if (gameWon()) {
             System.out.println("Your time is: " + timeElapsed + " seconds");
-            try {
-                leaderboard.addScoreToLeaderboard(timeElapsed);
-            } catch (Exception e) {
-                System.err.println("Encountered exception: " + e.getMessage());
-            }
+            leaderboard.addScoreToLeaderboard(timeElapsed);
         }
     }
 
@@ -112,8 +111,7 @@ public class Minesweeper {
         try {
             board.generateBoard();
         } catch (Exception e) {
-            System.out.println("An error occurred while generating board: The number of mines on the board"
-                    + " generated was invalid.");
+            System.out.println("ERROR\n" + e);
         }
     }
 
@@ -193,99 +191,17 @@ public class Minesweeper {
         return uncovered == X_DIMENSION * Y_DIMENSION - NUMBER_OF_MINES;
     }
 
-    // Code from here should be moved to Leaderboard.java.
-    /*private int getLeaderboardIndex(ArrayList<Long> scores, long timeElapsed) {
-        for (long s : scores) {
-            if (timeElapsed < s) {
-                return scores.indexOf(s);
-            }
-        }
-        if (scores.size() < MAX_LEADERBOARD_SIZE) {
-            return scores.size();
-        }
-
-        return -1;
-    }
-
-    // EFFECTS: adds score (in time elapsed) to leaderboard if the time is low enough
-    // ** I took a Java programming related class in grade 12, and this method uses similar mechanisms to
-    // what I was taught in that class. An example here:
-    // https://repl.it/@AlexZhang/WritingDatatoaFile#Main.java
-    private void addScoreToLeaderboard(long timeElapsed) throws Exception {
-        FileReader file = new FileReader(LEADERBOARD_FILE);
-        BufferedReader buffer = new BufferedReader(file);
-        ArrayList<Long> scores = new ArrayList<>();
-        String scoreEntry = buffer.readLine();
-
-        while (scoreEntry != null) {
-            scores.add(Long.parseLong(scoreEntry));
-            scoreEntry = buffer.readLine();
-        }
-
-        buffer.close();
-        file.close();
-
-        int index = getLeaderboardIndex(scores, timeElapsed);
-
-        if (index != -1) {
-            System.out.println("NEW HIGH SCORE!");
-            scores.add(index, timeElapsed);
-            if (scores.size() > MAX_LEADERBOARD_SIZE) {
-                scores.remove(scores.size() - 1);
-            }
-            writeScoresToFile(scores);
-        }
-    }
-
-    // EFFECTS: writes all leaderboard data back to the file that stores them
-    private void writeScoresToFile(ArrayList<Long> scores) {
+    // EFFECTS: displays the leaderboard
+    private void viewLeaderboard() {
+        System.out.println("\nHIGH SCORES");
         try {
-            FileWriter file = new FileWriter(LEADERBOARD_FILE);
-            BufferedWriter buffer = new BufferedWriter(file);
+            List<Long> scores = leaderboard.getLeaderboard();
 
             for (long s : scores) {
-                buffer.write(String.valueOf(s), 0, String.valueOf(s).length());
-                buffer.newLine();
-            }
-
-            buffer.close();
-            file.close();
-        } catch (FileNotFoundException e) {
-            System.out.println("FileNotFoundException: ");
-        } catch (IOException e) {
-            System.out.println("IOException: ");
-            System.out.println(e.getMessage());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    // EFFECTS: displays current leaderboard
-    private void viewLeaderboard() {
-        try {
-            FileReader file = new FileReader(LEADERBOARD_FILE);
-            BufferedReader buffer = new BufferedReader(file);
-            ArrayList<String> scores = new ArrayList<>();
-            String scoreEntry = buffer.readLine();
-
-            while (scoreEntry != null) {
-                scores.add(scoreEntry);
-                scoreEntry = buffer.readLine();
-            }
-
-            System.out.println("\nHIGH SCORES");
-            for (String s : scores) {
                 System.out.println((scores.indexOf(s) + 1) + ". " + s + " seconds");
             }
-
-            buffer.close();
-            file.close();
-        } catch (FileNotFoundException e) {
-            System.out.println("FileNotFoundException: ");
         } catch (IOException e) {
-            System.out.println("IOException: ");
-        } catch (Exception e) {
-            e.printStackTrace();
+            System.out.println("ERROR\n" + e);
         }
-    }*/
+    }
 }
