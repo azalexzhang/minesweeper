@@ -11,7 +11,7 @@ import static persistence.Reader.readLeaderboard;
 
 // Represents a leaderboard with high scores
 public class Leaderboard {
-    private static final String LEADERBOARD_FILE = "./data/leaderboard.txt";
+    public static final String LEADERBOARD_FILE = "./data/leaderboard.txt";
     private static final int MAX_LEADERBOARD_SIZE = 10;
 
     private List<Long> scores;
@@ -36,8 +36,8 @@ public class Leaderboard {
     }
 
     // EFFECTS: adds score (in time elapsed) to leaderboard if the time is low enough
-    public void addScoreToLeaderboard(long timeElapsed) throws IOException {
-        scores = readLeaderboard(new File(LEADERBOARD_FILE));
+    public void addScoreToLeaderboard(long timeElapsed, String leaderboardFile) throws IOException {
+        scores = readLeaderboard(new File(leaderboardFile));
 
         int index = getLeaderboardIndex(scores, timeElapsed);
 
@@ -62,7 +62,7 @@ public class Leaderboard {
     }
 
     // EFFECTS: returns leaderboard scores
-    public List<Long> getLeaderboard(String leaderboardFile) throws IOException {
-        return readLeaderboard(new File(leaderboardFile));
+    public List<Long> getLeaderboard() {
+        return scores;
     }
 }

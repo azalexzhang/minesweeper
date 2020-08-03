@@ -23,12 +23,51 @@ class LeaderboardTest {
     @Test
     void testAddScoreToLeaderboardNotFull() {
         try {
-            testScores =
-                    leaderboard.getLeaderboard("./data/testAddScoreToLeaderboardNotFull.txt");
-            long testScore = 80;
-            assertEquals(5, leaderboard.getLeaderboardIndex(testScores, testScore));
+            leaderboard.addScoreToLeaderboard(80,
+                    "./data/testAddScoreToLeaderboardNotFull.txt");
+            testScores = leaderboard.getLeaderboard();
+
+            List<Long> expected = new ArrayList<>();
+            expected.add((long) 60);
+            expected.add((long) 61);
+            expected.add((long) 65);
+            expected.add((long) 73);
+            expected.add((long) 78);
+            expected.add((long) 80);
+            assertEquals(expected, testScores);
+
+            testScores = new ArrayList<>();
+            leaderboard.addScoreToLeaderboard(61,
+                    "./data/testAddScoreToLeaderboardNotFull.txt");
+            testScores = leaderboard.getLeaderboard();
         } catch (IOException e) {
             fail("Unexpected IOException\n" + e);
         }
+    }
+
+    @Test
+    void testAddScoreToLeaderboardFull() {
+        long testScore = 70;
+
+        try {
+            leaderboard.addScoreToLeaderboard(testScore,
+                    "./data/testAddScoreToLeaderboardFull.txt");
+            testScores = leaderboard.getLeaderboard();
+        } catch (IOException e) {
+            fail("Unexpected IOException\n" + e);
+        }
+
+        List<Long> expected = new ArrayList<>();
+        expected.add((long) 48);
+        expected.add((long) 54);
+        expected.add((long) 61);
+        expected.add((long) 62);
+        expected.add((long) 69);
+        expected.add((long) 70);
+        expected.add((long) 73);
+        expected.add((long) 81);
+        expected.add((long) 82);
+        expected.add((long) 84);
+        assertEquals(expected, testScores);
     }
 }

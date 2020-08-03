@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Scanner;
 
 import static model.Board.*;
+import static model.Leaderboard.LEADERBOARD_FILE;
 
 // Stores data about the current game being played. The design of this UI class is relatively similar to
 // the TellerApp program.
@@ -107,7 +108,7 @@ public class Minesweeper {
             System.out.println("Your time is: " + timeElapsed + " seconds");
             // I wanted to put the try/catch block around the following statement, but checkstyle won't
             // let me due to the line limit.
-            leaderboard.addScoreToLeaderboard(timeElapsed);
+            leaderboard.addScoreToLeaderboard(timeElapsed, LEADERBOARD_FILE);
         }
     }
 
@@ -200,14 +201,10 @@ public class Minesweeper {
     // EFFECTS: displays the leaderboard
     private void viewLeaderboard() {
         System.out.println("\nHIGH SCORES");
-        try {
-            List<Long> scores = leaderboard.getLeaderboard("./data/testAddScoreToLeaderboardNotFull.txt");
+        List<Long> scores = leaderboard.getLeaderboard();
 
-            for (long s : scores) {
-                System.out.println((scores.indexOf(s) + 1) + ". " + s + " seconds");
-            }
-        } catch (IOException e) {
-            System.out.println("ERROR\n" + e);
+        for (long s : scores) {
+            System.out.println((scores.indexOf(s) + 1) + ". " + s + " seconds");
         }
     }
 }
