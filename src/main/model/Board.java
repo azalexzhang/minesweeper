@@ -3,7 +3,7 @@ package model;
 import java.util.ArrayList;
 import java.util.Random;
 
-// Represents the Minesweeper board.
+// Represents a Minesweeper board.
 public class Board {
     public static final int X_DIMENSION = 9;
     public static final int Y_DIMENSION = 9;
@@ -40,11 +40,6 @@ public class Board {
             }
             this.getSquareByCoordinates(x, y).setContainsMine();
         }
-    }
-
-    // EFFECTS: returns current board in form of ArrayList
-    public ArrayList<ArrayList<Square>> getBoard() {
-        return board;
     }
 
     // MODIFIES: this
