@@ -9,7 +9,7 @@ public class Board {
     public static final int Y_DIMENSION = 9;
     public static final int NUMBER_OF_MINES = 9;
 
-    private ArrayList<ArrayList<Square>> board; // Each ArrayList<Square> within the ArrayList
+    private final ArrayList<ArrayList<Square>> board; // Each ArrayList<Square> within the ArrayList
                                                 // represents a column.
 
     // EFFECTS: constructs a board in the form of an ArrayList of ArrayLists

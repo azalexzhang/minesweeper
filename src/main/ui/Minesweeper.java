@@ -7,12 +7,22 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Scanner;
 
+import javax.swing.AbstractButton;
+import javax.swing.JButton;
+import javax.swing.JPanel;
+import javax.swing.JFrame;
+import javax.swing.ImageIcon;
+
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+
 import static model.Board.*;
 import static model.Leaderboard.LEADERBOARD_FILE;
 
 // Stores data about the current game being played. The design of this UI class is relatively similar to
 // the TellerApp program.
-public class Minesweeper {
+public class Minesweeper extends JPanel implements ActionListener {
     private Leaderboard leaderboard;
     private Board board;
     private Scanner input;
@@ -91,14 +101,7 @@ public class Minesweeper {
         generateNewBoard();
 
         while (!gameOver) {
-            displayBoard();
-            System.out.println("Press 1 to uncover and 2 to flag.");
-            String uf = input.next();
-            System.out.print("Enter the x-coordinate of the square you want to modify: ");
-            int xxCoord = Integer.parseInt(input.next());
-            System.out.print("Enter the y-coordinate of the square you want to modify: ");
-            int yyCoord = Integer.parseInt(input.next());
-            gameOver = modifySelectedSquare(uf, xxCoord, yyCoord);
+            gameOver = gameControls();
         }
 
         long finish = System.nanoTime();
@@ -106,10 +109,21 @@ public class Minesweeper {
 
         if (gameWon()) {
             System.out.println("Your time is: " + timeElapsed + " seconds");
-            // I wanted to put the try/catch block around the following statement, but checkstyle won't
-            // let me due to the line limit.
             leaderboard.addScoreToLeaderboard(timeElapsed, LEADERBOARD_FILE);
         }
+    }
+
+    private boolean gameControls() {
+        boolean gameOver;
+        displayBoard();
+        System.out.println("Press 1 to uncover and 2 to flag.");
+        String uf = input.next();
+        System.out.print("Enter the x-coordinate of the square you want to modify: ");
+        int xxCoord = Integer.parseInt(input.next());
+        System.out.print("Enter the y-coordinate of the square you want to modify: ");
+        int yyCoord = Integer.parseInt(input.next());
+        gameOver = modifySelectedSquare(uf, xxCoord, yyCoord);
+        return gameOver;
     }
 
     // MODIFIES: this
@@ -206,5 +220,10 @@ public class Minesweeper {
         for (long s : scores) {
             System.out.println((scores.indexOf(s) + 1) + ". " + s + " seconds");
         }
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+
     }
 }
