@@ -7,22 +7,11 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Scanner;
 
-import javax.swing.AbstractButton;
-import javax.swing.JButton;
-import javax.swing.JPanel;
-import javax.swing.JFrame;
-import javax.swing.ImageIcon;
-
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-
 import static model.Board.*;
 import static model.Leaderboard.LEADERBOARD_FILE;
 
-// Stores data about the current game being played. The design of this UI class is relatively similar to
-// the TellerApp program.
-public class Minesweeper extends JPanel implements ActionListener {
+// Stores data about the current game being played.
+public class Minesweeper {
     private Leaderboard leaderboard;
     private Board board;
     private Scanner input;
@@ -220,10 +209,5 @@ public class Minesweeper extends JPanel implements ActionListener {
         for (long s : scores) {
             System.out.println((scores.indexOf(s) + 1) + ". " + s + " seconds");
         }
-    }
-
-    @Override
-    public void actionPerformed(ActionEvent e) {
-
     }
 }

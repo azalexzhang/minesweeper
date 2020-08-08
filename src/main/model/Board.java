@@ -5,9 +5,10 @@ import java.util.Random;
 
 // Represents a Minesweeper board.
 public class Board {
+    public static final int SQUARE_DIMENSION = 25;
     public static final int X_DIMENSION = 9;
     public static final int Y_DIMENSION = 9;
-    public static final int NUMBER_OF_MINES = 9;
+    public static final int NUMBER_OF_MINES = 1;
 
     private final ArrayList<ArrayList<Square>> board; // Each ArrayList<Square> within the ArrayList
                                                 // represents a column.
