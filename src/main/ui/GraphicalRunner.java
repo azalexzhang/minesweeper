@@ -8,6 +8,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -86,18 +87,38 @@ public class GraphicalRunner extends JFrame implements ActionListener, Observer 
     // EFFECTS: displays graphical leaderboard
     private void displayLeaderboard() {
         graphicalLeaderboard = new GraphicalLeaderboard();
-        add(graphicalLeaderboard);
-        JButton button = new JButton("Main Menu");
-        button.addActionListener(e -> {
-            remove(graphicalLeaderboard);
-            remove(button);
-            displayMainMenu();
-            repaint();
+        add(graphicalLeaderboard, BorderLayout.PAGE_START);
+        JButton button1 = new JButton("Main Menu");
+        JButton button2 = new JButton("Wipe Leaderboard Data "
+                + "**WARNING: THIS ACTION CANNOT BE UNDONE**");
+        button1.addActionListener(e -> {
+            returnToMainMenuFromLeaderboard(button1, button2);
+
         });
-        add(button, BorderLayout.PAGE_END);
+
+        button2.addActionListener(e -> {
+            try {
+                leaderboard.writeScoresToFile(new ArrayList<>());
+            } catch (IOException exception) {
+                exception.printStackTrace();
+            }
+            returnToMainMenuFromLeaderboard(button1, button2);
+        });
+        add(button1);
+        add(button2, BorderLayout.PAGE_END);
         pack();
         repaint();
     }
+
+    private void returnToMainMenuFromLeaderboard(JButton button1, JButton button2) {
+        remove(graphicalLeaderboard);
+        remove(button1);
+        remove(button2);
+        displayMainMenu();
+        repaint();
+    }
+
+    // EFFECTS: removes all buttons from leaderboard screen
 
     @Override
     public void actionPerformed(ActionEvent e) {

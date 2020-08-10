@@ -46,12 +46,12 @@ public class Leaderboard {
             if (scores.size() > MAX_LEADERBOARD_SIZE) {
                 scores.remove(scores.size() - 1);
             }
-            writeScoresToFile();
+            writeScoresToFile(scores);
         }
     }
 
     // EFFECTS: writes all leaderboard data back to the file that stores them
-    public void writeScoresToFile() throws IOException {
+    public void writeScoresToFile(List<Long> scores) throws IOException {
         Writer writer = new Writer(new File(LEADERBOARD_FILE));
 
         for (long s : scores) {
