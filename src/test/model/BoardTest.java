@@ -3,12 +3,10 @@ package model;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.Random;
+
 import static model.Board.*;
 import static org.junit.jupiter.api.Assertions.*;
-
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.util.Random;
 
 public class BoardTest {
     Board board;
@@ -33,7 +31,6 @@ public class BoardTest {
                 }
             }
         }
-
 
         assertEquals(NUMBER_OF_MINES, mines);
     }

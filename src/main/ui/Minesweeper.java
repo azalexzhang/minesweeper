@@ -96,7 +96,7 @@ public class Minesweeper {
         long finish = System.nanoTime();
         long timeElapsed = (finish - start) / 1000000000;
 
-        if (gameWon()) {
+        if (board.gameWon()) {
             System.out.println("Your time is: " + timeElapsed + " seconds");
             leaderboard.addScoreToLeaderboard(timeElapsed, LEADERBOARD_FILE);
         }
@@ -169,7 +169,7 @@ public class Minesweeper {
                     System.out.println("You detonated a mine.");
                     System.out.println("GAME OVER\n");
                     return true;
-                } else if (gameWon()) {
+                } else if (board.gameWon()) {
                     displayBoard();
                     System.out.println("You win!");
                     return true;
@@ -184,22 +184,6 @@ public class Minesweeper {
         return false;
     }
 
-    // EFFECTS: checks board to see if all squares (besides the ones containing mines) are uncovered
-    private boolean gameWon() {
-        int uncovered = 0;
-        for (int j = Y_DIMENSION - 1; j >= 0; j--) {
-            for (int i = 0; i < X_DIMENSION; i++) {
-                if (!board.getCoveredStatusByCoordinates(i, j)) {
-                    if (board.getMineStatusByCoordinates(i, j)) {
-                        return false;
-                    } else {
-                        uncovered++;
-                    }
-                }
-            }
-        }
-        return uncovered == X_DIMENSION * Y_DIMENSION - NUMBER_OF_MINES;
-    }
 
     // EFFECTS: displays the leaderboard
     private void viewLeaderboard() {

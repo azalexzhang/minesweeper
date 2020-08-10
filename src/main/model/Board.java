@@ -47,7 +47,7 @@ public class Board {
     // EFFECTS: if selected square is covered, uncover it. If square has no adjacent mines, uncovers all
     //          surrounding squares that are still covered.
     public void uncoverSquare(int x, int y) {
-        if (this.getCoveredStatusByCoordinates(x, y)) {
+        if (this.getCoveredStatusByCoordinates(x, y) && !this.getFlaggedStatusByCoordinates(x, y)) {
             this.getSquareByCoordinates(x, y).setCoveredStatus();
 
             if (this.allAdjacentSquaresNoMine(x, y) && !this.getMineStatusByCoordinates(x, y)) {
@@ -136,6 +136,37 @@ public class Board {
         if (this.getCoveredStatusByCoordinates(x, y)) {
             this.getSquareByCoordinates(x, y).setFlaggedStatus(!this.getFlaggedStatusByCoordinates(x, y));
         }
+    }
+
+    // EFFECTS: checks board to see if all squares (besides the ones containing mines) are uncovered
+    public boolean gameWon() {
+        int uncovered = 0;
+        for (int j = Y_DIMENSION - 1; j >= 0; j--) {
+            for (int i = 0; i < X_DIMENSION; i++) {
+                if (!this.getCoveredStatusByCoordinates(i, j)) {
+                    if (this.getMineStatusByCoordinates(i, j)) {
+                        return false;
+                    } else {
+                        uncovered++;
+                    }
+                }
+            }
+        }
+
+        return uncovered == X_DIMENSION * Y_DIMENSION - NUMBER_OF_MINES;
+    }
+
+    // EFFECTS: checks board to see if any square containing a mine is uncovered
+    public boolean gameLost() {
+        for (int i = 0; i < X_DIMENSION; i++) {
+            for (int j = 0; j < Y_DIMENSION; j++) {
+                if (this.getMineStatusByCoordinates(i, j) && !this.getCoveredStatusByCoordinates(i, j)) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 
     // EFFECTS: returns x-dimension of board

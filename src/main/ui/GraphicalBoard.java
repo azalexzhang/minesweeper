@@ -44,6 +44,7 @@ public class GraphicalBoard extends JPanel implements Observer {
                 Y_DIMENSION * GridSquare.SQUARE_SIZE));
     }
 
+    // MODIFIES: GridSquare
     // EFFECTS: updates grid squares with the current state of the board
     private void updateGridSquares() {
         for (int i = 0; i < X_DIMENSION; i++) {
@@ -57,9 +58,11 @@ public class GraphicalBoard extends JPanel implements Observer {
     // EFFECTS: updates the graphics of the board based on the mouse event received
     @Override
     public void update(Observable o, Object arg) {
+        /*
         System.err.println("update");
         System.err.println(((MouseEvent) arg).getModifiers());
         System.err.println(((Listener) o).getX() + " " +  ((Listener) o).getY());
+        */
         if (SwingUtilities.isLeftMouseButton((MouseEvent) arg)) {
             // update with new uncovered squares
             board.uncoverSquare(((Listener) o).getX(), ((Listener) o).getY());
@@ -72,13 +75,3 @@ public class GraphicalBoard extends JPanel implements Observer {
         repaint();
     }
 }
-
-/*
- * each cell is its own component and has their own MouseListener
- * the cells only listen for mouse clicks
- * graphical runner contains the cells and listens to them
- * fires onclick event when mouse is clicked
- * runner updates board
- * runner can also draw board by itself
- * Listener stores coordinates
- */

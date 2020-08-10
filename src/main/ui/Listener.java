@@ -16,6 +16,7 @@ public class Listener extends Observable implements MouseListener {
         this.xxCoord = x;
         this.yyCoord = y;
         addObserver(observer);
+        addObserver(GraphicalRunner.runner);
     }
 
     // EFFECTS: listens for mouse clicks on the component (the square on the board) and notifies runner
