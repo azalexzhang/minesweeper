@@ -1,6 +1,7 @@
-package ui;
+package ui.graphics;
 
-import javax.swing.*;
+import ui.Main;
+
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.Observable;
@@ -16,17 +17,26 @@ public class Listener extends Observable implements MouseListener {
         this.xxCoord = x;
         this.yyCoord = y;
         addObserver(observer);
-        addObserver(GraphicalRunner.runner);
+        addObserver(Main.runner);
     }
 
     // EFFECTS: listens for mouse clicks on the component (the square on the board) and notifies runner
     @Override
     public void mouseClicked(MouseEvent e) {
-        System.err.println("mouse clicked " + xxCoord + " " + yyCoord);
         setChanged();
         notifyObservers(e);
     }
 
+    public int getX() {
+        return xxCoord;
+    }
+
+    public int getY() {
+        return yyCoord;
+    }
+
+    // EFFECTS: The application only needs to check for the mouse being clicked, so the default behavior
+    //          for the following methods does nothing.
     @Override
     public void mousePressed(MouseEvent e) {
 
@@ -45,13 +55,5 @@ public class Listener extends Observable implements MouseListener {
     @Override
     public void mouseExited(MouseEvent e) {
 
-    }
-
-    public int getX() {
-        return xxCoord;
-    }
-
-    public int getY() {
-        return yyCoord;
     }
 }

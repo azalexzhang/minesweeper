@@ -1,4 +1,4 @@
-package ui;
+package ui.oldconsoleversion;
 
 import model.Board;
 import model.Leaderboard;
@@ -10,7 +10,7 @@ import java.util.Scanner;
 import static model.Board.*;
 import static model.Leaderboard.LEADERBOARD_FILE;
 
-// Stores data about the current game being played.
+// This was originally the console version of the game, but has since been replaced by
 public class Minesweeper {
     private Leaderboard leaderboard;
     private Board board;

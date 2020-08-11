@@ -1,4 +1,4 @@
-package ui;
+package ui.graphics;
 
 import persistence.Reader;
 
@@ -11,6 +11,8 @@ import static model.Leaderboard.LEADERBOARD_FILE;
 
 public class GraphicalLeaderboard extends JTextArea {
     public GraphicalLeaderboard() {
+        setEditable(false);
+
         try {
             List<Long> scores = Reader.readLeaderboard(new File(LEADERBOARD_FILE));
             this.append("HIGH SCORES\n");

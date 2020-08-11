@@ -1,4 +1,4 @@
-package ui;
+package ui.graphics;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -18,7 +18,7 @@ public class GridSquare extends JComponent {
     private static BufferedImage mineImage = null;
     private static BufferedImage[] uncoveredImages = new BufferedImage[9];
 
-    // Initialize image fields
+    // Initialize image fields with their corresponding images
     static {
         try {
             flaggedImage = ImageIO.read(new File("./data/images/flagged.png"));

@@ -17,8 +17,15 @@ public class Writer {
         bufferedWriter = new BufferedWriter(fileWriter);
     }
 
+    // EFFECTS: writes each long value (score) to file
     public void write(long l) throws IOException {
         bufferedWriter.write(String.valueOf(l));
+        bufferedWriter.newLine();
+    }
+
+    // EFFECTS: writes each string value (board data) to file
+    public void write(String s) throws IOException {
+        bufferedWriter.write(s);
         bufferedWriter.newLine();
     }
 

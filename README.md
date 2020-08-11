@@ -21,6 +21,19 @@ wasn't very good), and figured that it would be fairly easy to implement in Java
 - As a user, I want to be able to choose a difficulty level.
 - As a user, I want to be able to select a square and clear it.
 - As a user, I want to be able to "flag" a square I believe holds a mine.
-- As a user, I want to be able to save my score to a leaderboard.
+- As a user, I want to be able to save my current game so that I can load it when I open it again.
+- As a user, I want to be able to load a game I had previously left off and resume it.
+- As a user, I want to be able to save my score to a leaderboard. (This is actually done automatically when
+the game is won.)
 - As a user, I want to be able to view the leaderboard.
 - As a user, I want to be able to erase all data from the leaderboard.
+
+## Instructions for Grader
+- You can generate the first required event by clicking a button on the main menu. Click the button "View
+Leaderboard", and the program will load the leaderboard from the text file *leaderboard.txt*.
+- You can generate the second required event by clicking a button in the leaderboard page. You can
+completely erase all leaderboard data by clicking the button "Wipe Leaderboard Data".
+- You can locate my visual component by starting the game. Click "Play Game" in the main menu. The board is
+a grid of PNG files representing the state of each square on the board.
+- You can save the state of my application by clicking the "Save Game" button while playing a game.
+- You can reload the state of my application by clicking the "Load Game" button from the main menu.

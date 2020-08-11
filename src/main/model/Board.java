@@ -1,14 +1,21 @@
 package model;
 
+import persistence.Writer;
+
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Random;
 
+import static persistence.Reader.readBoard;
+
 // Represents a Minesweeper board.
 public class Board {
-    public static final int SQUARE_DIMENSION = 25;
     public static final int X_DIMENSION = 9;
     public static final int Y_DIMENSION = 9;
-    public static final int NUMBER_OF_MINES = 1;
+    public static final int NUMBER_OF_MINES = 10;
+    public static final String BOARD_FILE = "./data/board.txt";
+    public static final String DELIMITER = ",";
 
     private ArrayList<ArrayList<Square>> board; // Each ArrayList<Square> within the ArrayList
                                                 // represents a column.
@@ -40,6 +47,44 @@ public class Board {
                 y = random.nextInt(Y_DIMENSION);
             }
             this.getSquareByCoordinates(x, y).setContainsMine();
+        }
+    }
+
+    // EFFECTS: saves the current board to file
+    public void saveBoard(long startTime) throws IOException {
+        Writer writer = new Writer(new File(BOARD_FILE));
+
+        long endTime = System.nanoTime();
+        long timeElapsedSoFar = endTime - startTime;
+        writer.write(X_DIMENSION);
+        writer.write(Y_DIMENSION);
+        writer.write(timeElapsedSoFar);
+
+        for (ArrayList<Square> column : board) {
+            for (Square square : column) {
+                String containsMine = String.valueOf(square.getContainsMine());
+                String covered = String.valueOf(square.getCoveredStatus());
+                String flagged = String.valueOf(square.getFlaggedStatus());
+                writer.write(containsMine + DELIMITER + covered + DELIMITER + flagged);
+            }
+        }
+    }
+
+    // EFFECTS: loads board from file
+    public void loadBoard() throws IOException {
+        ArrayList<String> savedBoard = readBoard(new File(BOARD_FILE));
+        int xxDimension = Integer.parseInt(savedBoard.get(0));
+        int yyDimension = Integer.parseInt(savedBoard.get(1));
+        long timeElapsedSoFar = Long.parseLong(savedBoard.get(2));
+        savedBoard.remove(0);
+        savedBoard.remove(1);
+        savedBoard.remove(2);
+
+        for (int i = 0; i < xxDimension; i++) {
+            ArrayList<Square> arr = new ArrayList<>();
+            for (int j = 0; j < yyDimension; j++) {
+
+            }
         }
     }
 
@@ -213,32 +258,26 @@ public class Board {
             this.flagged = flag;
         }
 
-        // EFFECTS: returns true if square contains a mine; false otherwise
         private boolean getContainsMine() {
             return containsMine;
         }
 
-        // EFFECTS: returns true if square is covered; false otherwise
         private boolean getCoveredStatus() {
             return covered;
         }
 
-        // EFFECTS: returns true if square is flagged; false otherwise
         private boolean getFlaggedStatus() {
             return flagged;
         }
 
-        // EFFECTS: if the square's covered status is true, changes to false
         private void setCoveredStatus() {
             this.covered = false;
         }
 
-        // EFFECTS: sets flagged status to boolean value passed as parameter
         private void setFlaggedStatus(boolean flaggedStatus) {
             this.flagged = flaggedStatus;
         }
 
-        // EFFECTS: if false, sets mine status to true
         private void setContainsMine() {
             this.containsMine = true;
         }
