@@ -10,7 +10,8 @@ import java.util.Scanner;
 import static model.Board.*;
 import static model.Leaderboard.LEADERBOARD_FILE;
 
-// This was originally the console version of the game, but has since been replaced by
+// This was originally the console version of the game, but has since been replaced by the graphical
+// version. I'm just keeping it here for reference.
 public class Minesweeper {
     private Leaderboard leaderboard;
     private Board board;
@@ -188,9 +189,9 @@ public class Minesweeper {
     // EFFECTS: displays the leaderboard
     private void viewLeaderboard() {
         System.out.println("\nHIGH SCORES");
-        List<Long> scores = leaderboard.getLeaderboard();
+        List<Double> scores = leaderboard.getLeaderboard();
 
-        for (long s : scores) {
+        for (double s : scores) {
             System.out.println((scores.indexOf(s) + 1) + ". " + s + " seconds");
         }
     }

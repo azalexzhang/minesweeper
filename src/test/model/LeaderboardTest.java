@@ -12,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 class LeaderboardTest {
     private Leaderboard leaderboard;
-    private List<Long> testScores;
+    private List<Double> testScores;
 
     @BeforeEach
     void runBefore() {

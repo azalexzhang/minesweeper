@@ -14,7 +14,7 @@ public class Leaderboard {
     public static final String LEADERBOARD_FILE = "./data/leaderboard.txt";
     private static final int MAX_LEADERBOARD_SIZE = 10;
 
-    private List<Long> scores;
+    private List<Double> scores;
 
     public Leaderboard() {
         scores = new ArrayList<>();
@@ -22,8 +22,8 @@ public class Leaderboard {
 
     // EFFECTS: gets the index in the leaderboard where the new score should be added;
     //          if not a new high score, returns -1
-    public int getLeaderboardIndex(List<Long> scores, long timeElapsed) {
-        for (long s : scores) {
+    public int getLeaderboardIndex(List<Double> scores, double timeElapsed) {
+        for (double s : scores) {
             if (timeElapsed < s) {
                 return scores.indexOf(s);
             }
@@ -36,7 +36,7 @@ public class Leaderboard {
     }
 
     // EFFECTS: adds score (in time elapsed) to leaderboard if the time is low enough
-    public void addScoreToLeaderboard(long timeElapsed, String leaderboardFile) throws IOException {
+    public void addScoreToLeaderboard(double timeElapsed, String leaderboardFile) throws IOException {
         scores = readLeaderboard(new File(leaderboardFile));
 
         int index = getLeaderboardIndex(scores, timeElapsed);
@@ -51,10 +51,10 @@ public class Leaderboard {
     }
 
     // EFFECTS: writes all leaderboard data back to the file that stores them
-    public void writeScoresToFile(List<Long> scores) throws IOException {
+    public void writeScoresToFile(List<Double> scores) throws IOException {
         Writer writer = new Writer(new File(LEADERBOARD_FILE));
 
-        for (long s : scores) {
+        for (double s : scores) {
             writer.write(s);
         }
 
@@ -62,7 +62,7 @@ public class Leaderboard {
     }
 
     // EFFECTS: returns leaderboard scores
-    public List<Long> getLeaderboard() {
+    public List<Double> getLeaderboard() {
         return scores;
     }
 }

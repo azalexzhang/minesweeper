@@ -28,7 +28,10 @@ the game is won.)
 - As a user, I want to be able to view the leaderboard.
 - As a user, I want to be able to erase all data from the leaderboard.
 
-## Instructions for Grader
+**Notes for Phase 4**
+- 
+
+## Instructions for Grader (Phase 3)
 - You can generate the first required event by clicking a button on the main menu. Click the button "View
 Leaderboard", and the program will load the leaderboard from the text file *leaderboard.txt*.
 - You can generate the second required event by clicking a button in the leaderboard page. You can

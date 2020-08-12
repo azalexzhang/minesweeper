@@ -5,16 +5,18 @@ import persistence.Writer;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
-import static persistence.Reader.readBoard;
+import static persistence.Reader.readDimensionsAndTimeData;
 
 // Represents a Minesweeper board.
 public class Board {
     public static final int X_DIMENSION = 9;
     public static final int Y_DIMENSION = 9;
     public static final int NUMBER_OF_MINES = 10;
-    public static final String BOARD_FILE = "./data/board.txt";
+    public static final String DIMENSIONS_TIME_FILE = "./data/save/dimensionsAndTime.txt";
+    public static final String ROW_FILE = "./data/save/column";
     public static final String DELIMITER = ",";
 
     private ArrayList<ArrayList<Square>> board; // Each ArrayList<Square> within the ArrayList
@@ -52,40 +54,35 @@ public class Board {
 
     // EFFECTS: saves the current board to file
     public void saveBoard(long startTime) throws IOException {
-        Writer writer = new Writer(new File(BOARD_FILE));
+        Writer writer = new Writer(new File(DIMENSIONS_TIME_FILE));
 
         long endTime = System.nanoTime();
         long timeElapsedSoFar = endTime - startTime;
         writer.write(X_DIMENSION);
         writer.write(Y_DIMENSION);
         writer.write(timeElapsedSoFar);
+        writer.close();
 
         for (ArrayList<Square> column : board) {
+            writer = new Writer(new File(ROW_FILE + board.indexOf(column) + ".txt"));
             for (Square square : column) {
                 String containsMine = String.valueOf(square.getContainsMine());
                 String covered = String.valueOf(square.getCoveredStatus());
                 String flagged = String.valueOf(square.getFlaggedStatus());
                 writer.write(containsMine + DELIMITER + covered + DELIMITER + flagged);
             }
+            writer.close();
         }
     }
 
     // EFFECTS: loads board from file
     public void loadBoard() throws IOException {
-        ArrayList<String> savedBoard = readBoard(new File(BOARD_FILE));
-        int xxDimension = Integer.parseInt(savedBoard.get(0));
-        int yyDimension = Integer.parseInt(savedBoard.get(1));
-        long timeElapsedSoFar = Long.parseLong(savedBoard.get(2));
-        savedBoard.remove(0);
-        savedBoard.remove(1);
-        savedBoard.remove(2);
+        List<String> dimensionsAndTimeData = readDimensionsAndTimeData(new File(DIMENSIONS_TIME_FILE));
+        int x = Integer.parseInt(dimensionsAndTimeData.get(0));
+        int y = Integer.parseInt(dimensionsAndTimeData.get(1));
+        long timeSoFar = Long.parseLong(dimensionsAndTimeData.get(2));
 
-        for (int i = 0; i < xxDimension; i++) {
-            ArrayList<Square> arr = new ArrayList<>();
-            for (int j = 0; j < yyDimension; j++) {
 
-            }
-        }
     }
 
     // MODIFIES: this

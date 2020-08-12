@@ -11,14 +11,20 @@ import java.util.List;
 public class Reader {
     // EFFECTS: returns the leaderboard from the file; throws IOException if it encounters one when opening
     //          or reading the file
-    public static List<Long> readLeaderboard(File file) throws IOException {
+    public static List<Double> readLeaderboard(File file) throws IOException {
         return parseScores(readFile(file));
     }
 
     // EFFECTS: returns the saved board from the file; throws IOException if it encounters one when opening
     //          or reading the file
-    public static ArrayList<String> readBoard(File file) throws IOException {
-        return parseBoard(readFile(file));
+    public static ArrayList<ArrayList<String>> readBoard(File file) throws IOException {
+        return new ArrayList<>();
+    }
+
+    // EFFECTS: returns the saved dimensions and time data from file; throws IOException if it encounters one
+    //          when opening or reading the file
+    public static List<String> readDimensionsAndTimeData(File file) throws IOException {
+        return readFile(file);
     }
 
     // EFFECTS: returns content of file as a list of strings, each string containing the content of one row
@@ -28,18 +34,24 @@ public class Reader {
     }
 
     // EFFECTS: returns a list of scores
-    private static List<Long> parseScores(List<String> fileContent) {
-        List<Long> scores = new ArrayList<>();
+    private static List<Double> parseScores(List<String> fileContent) {
+        List<Double> scores = new ArrayList<>();
 
         for (String s : fileContent) {
-            scores.add(Long.parseLong(s));
+            scores.add(Double.parseDouble(s));
         }
 
         return scores;
     }
 
     // EFFECTS: returns the board in the form of a list
-    private static ArrayList<String> parseBoard(List<String> fileContent) {
-        return new ArrayList<>(fileContent);
+    private static ArrayList<String> parseColumn(List<String> fileContent) {
+        ArrayList<String> column = new ArrayList<>();
+
+        for (String s : fileContent) {
+            column.add(s);
+        }
+
+        return column;
     }
 }

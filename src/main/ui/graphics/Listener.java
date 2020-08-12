@@ -16,8 +16,8 @@ public class Listener extends Observable implements MouseListener {
     public Listener(int x, int y, Observer observer) {
         this.xxCoord = x;
         this.yyCoord = y;
-        addObserver(observer);
         addObserver(Main.runner);
+        addObserver(observer);
     }
 
     // EFFECTS: listens for mouse clicks on the component (the square on the board) and notifies runner

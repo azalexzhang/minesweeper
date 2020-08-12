@@ -11,13 +11,14 @@ import static model.Leaderboard.LEADERBOARD_FILE;
 
 public class GraphicalLeaderboard extends JTextArea {
     public GraphicalLeaderboard() {
+        setFont(getFont().deriveFont(18f));
         setEditable(false);
 
         try {
-            List<Long> scores = Reader.readLeaderboard(new File(LEADERBOARD_FILE));
+            List<Double> scores = Reader.readLeaderboard(new File(LEADERBOARD_FILE));
             this.append("HIGH SCORES\n");
-            for (long s : scores) {
-                String text = Long.toString(s);
+            for (double s : scores) {
+                String text = Double.toString(s);
                 this.append((scores.indexOf(s) + 1) + ". " + text + " seconds\n");
             }
         } catch (IOException e) {

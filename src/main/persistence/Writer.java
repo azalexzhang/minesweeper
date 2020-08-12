@@ -18,8 +18,8 @@ public class Writer {
     }
 
     // EFFECTS: writes each long value (score) to file
-    public void write(long l) throws IOException {
-        bufferedWriter.write(String.valueOf(l));
+    public void write(double d) throws IOException {
+        bufferedWriter.write(String.valueOf(d));
         bufferedWriter.newLine();
     }
 

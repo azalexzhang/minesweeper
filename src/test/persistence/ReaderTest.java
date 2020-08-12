@@ -12,7 +12,7 @@ class ReaderTest {
     @Test
     void testParseScoresFile() {
         try {
-            List<Long> testScores =
+            List<Double> testScores =
                     Reader.readLeaderboard(new File("./data/testLeaderboardReaderFile.txt"));
             assertEquals(60, testScores.get(0));
             assertEquals(61, testScores.get(1));

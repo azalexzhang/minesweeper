@@ -34,7 +34,7 @@ class WriterTest {
 
             testWriter.close();
 
-            List<Long> scores = Reader.readLeaderboard(new File(TEST_FILE));
+            List<Double> scores = Reader.readLeaderboard(new File(TEST_FILE));
             assertEquals(64, scores.get(0));
             assertEquals(72, scores.get(1));
             assertEquals(84, scores.get(2));

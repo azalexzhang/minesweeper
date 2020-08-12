@@ -17,15 +17,10 @@ public class GraphicalRunner extends JFrame implements ActionListener, Observer 
     private GraphicalLeaderboard graphicalLeaderboard;
     private Board board;
     private Leaderboard leaderboard;
-    private JButton runGameButton;
-    private JButton loadGameButton;
-    private JButton viewLeaderboardButton;
-    private JButton quitButton;
-    private JButton saveButton;
     private JTextArea instructionArea;
     private JPanel buttonPanel;
-    private long startTime;
-    private long savedTime;
+    private double startTime;
+    private double savedTime;
 
     // EFFECTS: constructs a graphical runner that runs the graphics of the game
     public GraphicalRunner() {
@@ -43,17 +38,21 @@ public class GraphicalRunner extends JFrame implements ActionListener, Observer 
     // EFFECTS: initializes the new buttons and their actions
     private void displayMainMenu() {
         instructionArea = displayInstructions();
-        runGameButton = new JButton("Play");
-        loadGameButton = new JButton("Load Game **DISABLED**");
-        viewLeaderboardButton = new JButton("View High Scores");
-        quitButton = new JButton("Quit");
+        JButton runGameButton = new JButton("Play");
+        JButton loadGameButton = new JButton("Load Game **DISABLED**");
+        JButton viewLeaderboardButton = new JButton("View High Scores");
+        JButton quitButton = new JButton("Quit");
 
+        runGameButton.setFont(runGameButton.getFont().deriveFont(18f));
         runGameButton.setActionCommand("Play");
         runGameButton.addActionListener(this);
+        viewLeaderboardButton.setFont(viewLeaderboardButton.getFont().deriveFont(18f));
         viewLeaderboardButton.setActionCommand("View Leaderboard");
         viewLeaderboardButton.addActionListener(this);
+        quitButton.setFont(quitButton.getFont().deriveFont(18f));
         quitButton.setActionCommand("Quit");
         quitButton.addActionListener(this);
+        loadGameButton.setFont(loadGameButton.getFont().deriveFont(18f));
 
         buttonPanel = new JPanel();
         buttonPanel.add(runGameButton, BorderLayout.PAGE_START);
@@ -69,6 +68,7 @@ public class GraphicalRunner extends JFrame implements ActionListener, Observer 
     private JTextArea displayInstructions() {
         JTextArea textArea = new JTextArea();
         textArea.setEditable(false);
+        textArea.setFont(textArea.getFont().deriveFont(18f));
         textArea.append("MINESWEEPER\n");
         textArea.append("- The goal of Minesweeper is to clear a board with individual squares, without"
                 + " touching any mines.\n");
@@ -86,7 +86,6 @@ public class GraphicalRunner extends JFrame implements ActionListener, Observer 
         initGame();
         savedTime = 0;
         startTime = System.nanoTime();
-        System.err.println(startTime);
     }
 
     // EFFECTS: loads a previously saved game.
@@ -101,7 +100,8 @@ public class GraphicalRunner extends JFrame implements ActionListener, Observer 
         board.generateBoard();
         graphicalBoard = new GraphicalBoard(board);
         add(graphicalBoard, BorderLayout.PAGE_START);
-        saveButton = new JButton("Save Game **DISABLED**");
+        JButton saveButton = new JButton("Save Game **DISABLED**");
+        saveButton.setFont(saveButton.getFont().deriveFont(18f));
         add(saveButton, BorderLayout.PAGE_END);
         pack();
     }
@@ -114,8 +114,10 @@ public class GraphicalRunner extends JFrame implements ActionListener, Observer 
         JButton button2 = new JButton("Wipe Leaderboard Data "
                 + "**WARNING: THIS ACTION CANNOT BE UNDONE**");
 
+        button1.setFont(button1.getFont().deriveFont(18f));
         button1.addActionListener(e -> returnToMainMenuFromLeaderboard(button1, button2));
 
+        button2.setFont(button2.getFont().deriveFont(18f));
         button2.addActionListener(e -> {
             try {
                 leaderboard.writeScoresToFile(new ArrayList<>()); // write empty ArrayList to file
@@ -167,14 +169,14 @@ public class GraphicalRunner extends JFrame implements ActionListener, Observer 
     @Override
     public void update(Observable o, Object arg) {
         if (board.gameWon()) {
-            long endTime = System.nanoTime();
-            System.err.println(endTime);
-            long timeElapsed = (endTime - startTime + savedTime) / 1000000000;
+            double endTime = System.nanoTime();
+            double timeElapsed = (endTime - startTime + savedTime) / 1000000000;
             try {
                 leaderboard.addScoreToLeaderboard(timeElapsed, Leaderboard.LEADERBOARD_FILE);
             } catch (IOException e) {
                 e.printStackTrace();
             }
+
             remove(graphicalBoard);
             displayGameWonMessage(timeElapsed);
         } else if (board.gameLost()) {
@@ -184,8 +186,9 @@ public class GraphicalRunner extends JFrame implements ActionListener, Observer 
     }
 
     // EFFECTS: displays a dialog indicating the game is won
-    private void displayGameWonMessage(long timeElapsed) {
+    private void displayGameWonMessage(double timeElapsed) {
         JTextArea textArea = new JTextArea();
+        textArea.setFont(textArea.getFont().deriveFont(18f));
         textArea.setEditable(false);
         textArea.append("You win!\nYour time is: " + timeElapsed + " seconds\n");
         if (leaderboard.getLeaderboardIndex(leaderboard.getLeaderboard(), timeElapsed) != -1) {
@@ -195,6 +198,7 @@ public class GraphicalRunner extends JFrame implements ActionListener, Observer 
         }
 
         JButton button = new JButton("OK");
+        button.setFont(button.getFont().deriveFont(18f));
         button.addActionListener(e -> {
             remove(button);
             remove(textArea);
@@ -210,9 +214,11 @@ public class GraphicalRunner extends JFrame implements ActionListener, Observer 
     // EFFECTS: displays a dialog indicating the game is lost
     private void displayGameLostMessage() {
         JTextArea textArea = new JTextArea();
+        textArea.setFont(textArea.getFont().deriveFont(18f));
         textArea.setEditable(false);
         textArea.append("Game over!");
         JButton button = new JButton("OK");
+        button.setFont(button.getFont().deriveFont(18f));
         button.addActionListener(e -> {
             remove(button);
             remove(textArea);
