@@ -12,6 +12,9 @@ import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Observer;
 
+import static model.Board.X_DIMENSION;
+import static model.Board.Y_DIMENSION;
+
 public class GraphicalRunner extends JFrame implements ActionListener, Observer {
     private GraphicalBoard graphicalBoard;
     private GraphicalLeaderboard graphicalLeaderboard;
@@ -35,40 +38,48 @@ public class GraphicalRunner extends JFrame implements ActionListener, Observer 
         setVisible(true);
     }
 
-    // EFFECTS: initializes the new buttons and their actions
+    // EFFECTS: displays the main menu with instructions and a button panel
     private void displayMainMenu() {
         instructionArea = displayInstructions();
+        addButtonPanel();
+        this.add(instructionArea, BorderLayout.PAGE_START);
+        this.add(addButtonPanel(), BorderLayout.PAGE_END);
+        pack();
+    }
+
+    // EFFECTS: adds buttons to main menu
+    private JPanel addButtonPanel() {
         JButton runGameButton = new JButton("Play");
-        JButton loadGameButton = new JButton("Load Game **DISABLED**");
+        JButton loadGameButton = new JButton("Load Game");
         JButton viewLeaderboardButton = new JButton("View High Scores");
         JButton quitButton = new JButton("Quit");
 
-        runGameButton.setFont(runGameButton.getFont().deriveFont(18f));
+        setButtonFont(runGameButton);
         runGameButton.setActionCommand("Play");
         runGameButton.addActionListener(this);
-        viewLeaderboardButton.setFont(viewLeaderboardButton.getFont().deriveFont(18f));
+        setButtonFont(viewLeaderboardButton);
         viewLeaderboardButton.setActionCommand("View Leaderboard");
         viewLeaderboardButton.addActionListener(this);
-        quitButton.setFont(quitButton.getFont().deriveFont(18f));
+        setButtonFont(quitButton);
         quitButton.setActionCommand("Quit");
         quitButton.addActionListener(this);
-        loadGameButton.setFont(loadGameButton.getFont().deriveFont(18f));
+        setButtonFont(loadGameButton);
+        loadGameButton.setActionCommand("Load Game");
+        loadGameButton.addActionListener(this);
 
         buttonPanel = new JPanel();
         buttonPanel.add(runGameButton, BorderLayout.PAGE_START);
         buttonPanel.add(loadGameButton);
         buttonPanel.add(viewLeaderboardButton);
         buttonPanel.add(quitButton, BorderLayout.PAGE_END);
-        this.add(instructionArea, BorderLayout.PAGE_START);
-        this.add(buttonPanel, BorderLayout.PAGE_END);
-        pack();
+        return buttonPanel;
     }
 
     // EFFECTS: displays set of instructions on how to play
     private JTextArea displayInstructions() {
         JTextArea textArea = new JTextArea();
         textArea.setEditable(false);
-        textArea.setFont(textArea.getFont().deriveFont(18f));
+        setTextAreaFont(textArea);
         textArea.append("MINESWEEPER\n");
         textArea.append("- The goal of Minesweeper is to clear a board with individual squares, without"
                 + " touching any mines.\n");
@@ -83,27 +94,61 @@ public class GraphicalRunner extends JFrame implements ActionListener, Observer 
 
     // EFFECTS: runs a Minesweeper game
     private void runGame() {
-        initGame();
+        board = new Board();
+        board.generateBoard();
         savedTime = 0;
         startTime = System.nanoTime();
+        initGame(startTime, savedTime);
     }
 
     // EFFECTS: loads a previously saved game.
-    private void loadGame() {
+    private void loadGame() throws IOException {
         board = new Board();
-        startTime = System.nanoTime();
+        savedTime = board.loadBoard();
+
+        if (savedTime == 0) {
+            handleLoadGameFailed();
+        } else {
+            startTime = System.nanoTime();
+            initGame(startTime, savedTime);
+        }
     }
 
     // EFFECTS: initializes a Minesweeper game
-    private void initGame() {
-        board = new Board();
-        board.generateBoard();
-        graphicalBoard = new GraphicalBoard(board);
+    private void initGame(double startTime, double savedTime) {
+        graphicalBoard = new GraphicalBoard(board, X_DIMENSION, Y_DIMENSION);
         add(graphicalBoard, BorderLayout.PAGE_START);
-        JButton saveButton = new JButton("Save Game **DISABLED**");
-        saveButton.setFont(saveButton.getFont().deriveFont(18f));
+        JButton saveButton = new JButton("<html>Save Game and Quit<br>**WARNING: This will overwrite"
+                + "<br>any previously saved game!**</html>");
+        setButtonFont(saveButton);
+        saveButton.addActionListener(e -> {
+            saveBoardAndTimeElapsed(startTime, savedTime);
+            dispose();
+        });
         add(saveButton, BorderLayout.PAGE_END);
         pack();
+    }
+
+    // EFFECTS: saves board with time elapsed so far
+    private void saveBoardAndTimeElapsed(double startTime, double savedTime) {
+        try {
+            double endTime = System.nanoTime();
+            savedTime += endTime - startTime;
+            board.saveBoard(savedTime);
+        } catch (IOException exception) {
+            exception.printStackTrace();
+        }
+    }
+
+    // EFFECTS: sets the font of the text on the buttons
+    private void setButtonFont(JButton button) {
+        // The default font size was too small on my 4K (3840 by 2160 pixels) computer screen.
+        button.setFont(button.getFont().deriveFont(18f));
+    }
+
+    // EFFECTS: sets the font of the text in text areas
+    private void setTextAreaFont(JTextArea textArea) {
+        textArea.setFont(textArea.getFont().deriveFont(18f));
     }
 
     // EFFECTS: displays graphical leaderboard
@@ -114,13 +159,14 @@ public class GraphicalRunner extends JFrame implements ActionListener, Observer 
         JButton button2 = new JButton("Wipe Leaderboard Data "
                 + "**WARNING: THIS ACTION CANNOT BE UNDONE**");
 
-        button1.setFont(button1.getFont().deriveFont(18f));
+        setButtonFont(button1);
         button1.addActionListener(e -> returnToMainMenuFromLeaderboard(button1, button2));
 
-        button2.setFont(button2.getFont().deriveFont(18f));
+        setButtonFont(button2);
         button2.addActionListener(e -> {
             try {
-                leaderboard.writeScoresToFile(new ArrayList<>()); // write empty ArrayList to file
+                // write empty ArrayList to file
+                leaderboard.writeScoresToFile(new ArrayList<>(), Leaderboard.LEADERBOARD_FILE_EASY);
             } catch (IOException exception) {
                 exception.printStackTrace();
             }
@@ -150,9 +196,13 @@ public class GraphicalRunner extends JFrame implements ActionListener, Observer 
 
         switch (e.getActionCommand()) {
             case "Play":
+                runGame();
+                break;
+            case "Load Game":
                 try {
-                    runGame();
+                    loadGame();
                 } catch (Exception exception) {
+                    handleLoadGameFailed();
                     exception.printStackTrace();
                 }
                 break;
@@ -165,6 +215,44 @@ public class GraphicalRunner extends JFrame implements ActionListener, Observer 
         }
     }
 
+    // EFFECTS: if an exception was thrown while loading saved game (such as when there was no saved
+    //          game in the first place), displays dialog asking if the user wants to start a new game
+    private void handleLoadGameFailed() {
+        JTextArea noLoadedGameTextArea = new JTextArea();
+        setTextAreaFont(noLoadedGameTextArea);
+        noLoadedGameTextArea.append("Game could not be loaded: Either there is no previously saved game"
+                + " or there was an error trying to load the previously saved game.\nWould you like"
+                + " to start a new game instead?");
+
+        JButton yesButton = new JButton("Yes");
+        JButton noButton = new JButton("No");
+
+        setButtonFont(yesButton);
+        yesButton.addActionListener(e -> {
+            removeLoadGameMessage(noLoadedGameTextArea, yesButton, noButton);
+            runGame();
+        });
+
+        setButtonFont(noButton);
+        noButton.addActionListener(e -> {
+            removeLoadGameMessage(noLoadedGameTextArea, yesButton, noButton);
+            displayMainMenu();
+            repaint();
+        });
+
+        add(noLoadedGameTextArea, BorderLayout.PAGE_START);
+        add(yesButton);
+        add(noButton, BorderLayout.PAGE_END);
+        pack();
+    }
+
+    // EFFECTS: removes load game failed message box
+    private void removeLoadGameMessage(JTextArea textArea, JButton yesButton, JButton noButton) {
+        remove(yesButton);
+        remove(noButton);
+        remove(textArea);
+    }
+
     // EFFECTS: updates board based on whether or not the game is won or lost
     @Override
     public void update(Observable o, Object arg) {
@@ -172,7 +260,7 @@ public class GraphicalRunner extends JFrame implements ActionListener, Observer 
             double endTime = System.nanoTime();
             double timeElapsed = (endTime - startTime + savedTime) / 1000000000;
             try {
-                leaderboard.addScoreToLeaderboard(timeElapsed, Leaderboard.LEADERBOARD_FILE);
+                leaderboard.addScoreToLeaderboard(timeElapsed, Leaderboard.LEADERBOARD_FILE_EASY);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -188,7 +276,7 @@ public class GraphicalRunner extends JFrame implements ActionListener, Observer 
     // EFFECTS: displays a dialog indicating the game is won
     private void displayGameWonMessage(double timeElapsed) {
         JTextArea textArea = new JTextArea();
-        textArea.setFont(textArea.getFont().deriveFont(18f));
+        setTextAreaFont(textArea);
         textArea.setEditable(false);
         textArea.append("You win!\nYour time is: " + timeElapsed + " seconds\n");
         if (leaderboard.getLeaderboardIndex(leaderboard.getLeaderboard(), timeElapsed) != -1) {
@@ -198,7 +286,7 @@ public class GraphicalRunner extends JFrame implements ActionListener, Observer 
         }
 
         JButton button = new JButton("OK");
-        button.setFont(button.getFont().deriveFont(18f));
+        setButtonFont(button);
         button.addActionListener(e -> {
             remove(button);
             remove(textArea);
@@ -214,11 +302,11 @@ public class GraphicalRunner extends JFrame implements ActionListener, Observer 
     // EFFECTS: displays a dialog indicating the game is lost
     private void displayGameLostMessage() {
         JTextArea textArea = new JTextArea();
-        textArea.setFont(textArea.getFont().deriveFont(18f));
+        setTextAreaFont(textArea);
         textArea.setEditable(false);
         textArea.append("Game over!");
         JButton button = new JButton("OK");
-        button.setFont(button.getFont().deriveFont(18f));
+        setButtonFont(button);
         button.addActionListener(e -> {
             remove(button);
             remove(textArea);

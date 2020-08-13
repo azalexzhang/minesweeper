@@ -9,46 +9,42 @@ import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Observer;
 
-import static model.Board.X_DIMENSION;
-import static model.Board.Y_DIMENSION;
-
 // Displays the board graphics.
 public class GraphicalBoard extends JPanel implements Observer {
     private Board board;
     private ArrayList<ArrayList<GridSquare>> grid;
+    private int xx;
+    private int yy;
 
     // EFFECTS: constructs a graphical board
-    public GraphicalBoard(Board board) {
+    public GraphicalBoard(Board board, int x, int y) {
         this.grid = new ArrayList<>();
         this.board = board;
+        this.xx = x;
+        this.yy = y;
         setLayout(null);
-        for (int i = 0; i < X_DIMENSION; i++) {
+        for (int i = 0; i < xx; i++) {
             ArrayList<GridSquare> arr = new ArrayList<>();
-            for (int j = 0; j < Y_DIMENSION; j++) {
-                GridSquare g = new GridSquare(i,
-                        j,
-                        board.getSurroundingMines(i, j),
-                        board.getMineStatusByCoordinates(i, j),
-                        this);
-                g.setBounds(i * GridSquare.SQUARE_SIZE,
-                        j * GridSquare.SQUARE_SIZE,
-                        GridSquare.SQUARE_SIZE,
-                        GridSquare.SQUARE_SIZE);
+            for (int j = 0; j < yy; j++) {
+                GridSquare g = new GridSquare(i, j, board.getSurroundingMines(i, j),
+                        board.getMineStatusByCoordinates(i, j), this);
+                g.setBounds(i * GridSquare.SQUARE_SIZE, j * GridSquare.SQUARE_SIZE,
+                        GridSquare.SQUARE_SIZE, GridSquare.SQUARE_SIZE);
                 g.repaint();
                 add(g);
                 arr.add(g);
             }
             grid.add(arr);
         }
-        setPreferredSize(new Dimension(X_DIMENSION * GridSquare.SQUARE_SIZE,
-                Y_DIMENSION * GridSquare.SQUARE_SIZE));
+        setPreferredSize(new Dimension(xx * GridSquare.SQUARE_SIZE,
+                yy * GridSquare.SQUARE_SIZE));
     }
 
     // MODIFIES: GridSquare
     // EFFECTS: updates grid squares with the current state of the board
     private void updateGridSquares() {
-        for (int i = 0; i < X_DIMENSION; i++) {
-            for (int j = 0; j < Y_DIMENSION; j++) {
+        for (int i = 0; i < xx; i++) {
+            for (int j = 0; j < yy; j++) {
                 grid.get(i).get(j).setCovered(board.getCoveredStatusByCoordinates(i, j));
                 grid.get(i).get(j).setFlagged(board.getFlaggedStatusByCoordinates(i, j));
             }

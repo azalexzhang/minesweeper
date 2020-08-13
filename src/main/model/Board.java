@@ -8,15 +8,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import static persistence.Reader.readColumn;
 import static persistence.Reader.readDimensionsAndTimeData;
 
 // Represents a Minesweeper board.
 public class Board {
-    public static final int X_DIMENSION = 9;
-    public static final int Y_DIMENSION = 9;
-    public static final int NUMBER_OF_MINES = 10;
+    public static final int X_DIMENSION = 24;
+    public static final int Y_DIMENSION = 24;
+    public static final int NUMBER_OF_MINES = 100;
     public static final String DIMENSIONS_TIME_FILE = "./data/save/dimensionsAndTime.txt";
-    public static final String ROW_FILE = "./data/save/column";
+    public static final String COLUMN_FILE = "./data/save/column";
     public static final String DELIMITER = ",";
 
     private ArrayList<ArrayList<Square>> board; // Each ArrayList<Square> within the ArrayList
@@ -53,18 +54,16 @@ public class Board {
     }
 
     // EFFECTS: saves the current board to file
-    public void saveBoard(long startTime) throws IOException {
+    public void saveBoard(double timeElapsedSoFar) throws IOException {
         Writer writer = new Writer(new File(DIMENSIONS_TIME_FILE));
 
-        long endTime = System.nanoTime();
-        long timeElapsedSoFar = endTime - startTime;
         writer.write(X_DIMENSION);
         writer.write(Y_DIMENSION);
         writer.write(timeElapsedSoFar);
         writer.close();
 
         for (ArrayList<Square> column : board) {
-            writer = new Writer(new File(ROW_FILE + board.indexOf(column) + ".txt"));
+            writer = new Writer(new File(COLUMN_FILE + board.indexOf(column) + ".txt"));
             for (Square square : column) {
                 String containsMine = String.valueOf(square.getContainsMine());
                 String covered = String.valueOf(square.getCoveredStatus());
@@ -76,13 +75,49 @@ public class Board {
     }
 
     // EFFECTS: loads board from file
-    public void loadBoard() throws IOException {
-        List<String> dimensionsAndTimeData = readDimensionsAndTimeData(new File(DIMENSIONS_TIME_FILE));
-        int x = Integer.parseInt(dimensionsAndTimeData.get(0));
-        int y = Integer.parseInt(dimensionsAndTimeData.get(1));
-        long timeSoFar = Long.parseLong(dimensionsAndTimeData.get(2));
+    public double loadBoard() throws IOException {
+        File file = new File(DIMENSIONS_TIME_FILE);
 
+        if (file.exists()) {
+            List<String> dimensionsAndTimeData = readDimensionsAndTimeData(file);
+            int x = (int) Double.parseDouble(dimensionsAndTimeData.get(0));
+            double timeSoFar = Double.parseDouble(dimensionsAndTimeData.get(2));
+            file.delete();
 
+            for (int i = 0; i < x; i++) {
+                ArrayList<Square> column = new ArrayList<>();
+                file = new File(COLUMN_FILE + i + ".txt");
+
+                if (file.exists()) {
+                    ArrayList<String> savedColumn = readColumn(file);
+
+                    for (String s : savedColumn) {
+                        Square square = new Square(splitString(s).get(0), splitString(s).get(1),
+                                splitString(s).get(2));
+                        column.add(square);
+                    }
+
+                    board.add(column);
+                    file.delete();
+                }
+            }
+
+            return timeSoFar;
+        }
+
+        return 0;
+    }
+
+    // EFFECTS: returns a list of booleans parsed from strings obtained by splitting line on DELIMITER
+    private ArrayList<Boolean> splitString(String line) {
+        String[] splits = line.split(DELIMITER);
+        ArrayList<Boolean> booleans = new ArrayList<>();
+
+        for (String s : splits) {
+            booleans.add(Boolean.parseBoolean(s));
+        }
+
+        return booleans;
     }
 
     // MODIFIES: this

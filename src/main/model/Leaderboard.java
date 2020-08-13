@@ -11,7 +11,7 @@ import static persistence.Reader.readLeaderboard;
 
 // Represents a leaderboard with high scores
 public class Leaderboard {
-    public static final String LEADERBOARD_FILE = "./data/leaderboard.txt";
+    public static final String LEADERBOARD_FILE_EASY = "./data/leaderboard.txt";
     private static final int MAX_LEADERBOARD_SIZE = 10;
 
     private List<Double> scores;
@@ -46,13 +46,13 @@ public class Leaderboard {
             if (scores.size() > MAX_LEADERBOARD_SIZE) {
                 scores.remove(scores.size() - 1);
             }
-            writeScoresToFile(scores);
+            writeScoresToFile(scores, leaderboardFile);
         }
     }
 
     // EFFECTS: writes all leaderboard data back to the file that stores them
-    public void writeScoresToFile(List<Double> scores) throws IOException {
-        Writer writer = new Writer(new File(LEADERBOARD_FILE));
+    public void writeScoresToFile(List<Double> scores, String leaderboardFile) throws IOException {
+        Writer writer = new Writer(new File(leaderboardFile));
 
         for (double s : scores) {
             writer.write(s);

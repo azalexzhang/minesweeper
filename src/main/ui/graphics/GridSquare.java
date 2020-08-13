@@ -50,6 +50,7 @@ public class GridSquare extends JComponent {
         this.containsMine = containsMine;
         this.covered = true;
         this.flagged = false;
+        setPreferredSize(new Dimension(SQUARE_SIZE, SQUARE_SIZE));
         addMouseListener(new Listener(x, y, observer));
     }
 

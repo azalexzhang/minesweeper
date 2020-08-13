@@ -14,21 +14,21 @@ import static org.junit.jupiter.api.Assertions.fail;
 class WriterTest {
     private static final String TEST_FILE = "./data/testLeaderboard.txt";
     private Writer testWriter;
-    private List<Long> testScores;
+    private List<Double> testScores;
 
     @BeforeEach
     void runBefore() throws IOException {
         testWriter = new Writer(new File(TEST_FILE));
         testScores = new ArrayList<>();
-        testScores.add((long) 64);
-        testScores.add((long) 72);
-        testScores.add((long) 84);
+        testScores.add(64.0);
+        testScores.add(72.0);
+        testScores.add(84.0);
     }
 
     @Test
     void testWriteScores() {
         try {
-            for (long s : testScores) {
+            for (double s : testScores) {
                 testWriter.write(s);
             }
 

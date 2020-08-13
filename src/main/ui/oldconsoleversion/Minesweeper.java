@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Scanner;
 
 import static model.Board.*;
-import static model.Leaderboard.LEADERBOARD_FILE;
+import static model.Leaderboard.LEADERBOARD_FILE_EASY;
 
 // This was originally the console version of the game, but has since been replaced by the graphical
 // version. I'm just keeping it here for reference.
@@ -99,7 +99,7 @@ public class Minesweeper {
 
         if (board.gameWon()) {
             System.out.println("Your time is: " + timeElapsed + " seconds");
-            leaderboard.addScoreToLeaderboard(timeElapsed, LEADERBOARD_FILE);
+            leaderboard.addScoreToLeaderboard(timeElapsed, LEADERBOARD_FILE_EASY);
         }
     }
 

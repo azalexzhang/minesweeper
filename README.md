@@ -28,8 +28,23 @@ the game is won.)
 - As a user, I want to be able to view the leaderboard.
 - As a user, I want to be able to erase all data from the leaderboard.
 
-**Notes for Phase 4**
-- 
+**Phase 4: Task 2**
+Reader is a class in which some of the methods throw a checked exception (Java's built-in IOException for
+all of them).
+
+**Phase 4: Task 3**
+- In Phase 1 I had the older Minesweeper class running the console version of the game to handle at least
+two responsibilities, which were the game itself and the leaderboard. I had refactored the class so that the
+code handling the leaderboard was put into a separate class. (This probably doesn't count for Task 3 of this
+phase, but I thought it was good to mention anyway as an example of how I improved cohesion in the past.)
+- The computer I use has a 4K screen (3840 by 2160 pixels), so the default font size of the text and the
+buttons is way too small for me. I made the text in each JButton and JTextArea bigger with a line like the
+following:  
+textArea.setFont(textArea.getFont().derive(18f));  
+What I ended up doing was not very cohesive, and I ended up copying a line like this maybe 10 times or so.
+I wanted the font size of the text in the buttons and the text areas to be consistent, so I eventually
+extracted two methods, one for JButtons, and one for JTextAreas, so that if I wanted to change the font size
+for all of them at once, I would only need to change two values.
 
 ## Instructions for Grader (Phase 3)
 - You can generate the first required event by clicking a button on the main menu. Click the button "View

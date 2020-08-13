@@ -15,10 +15,10 @@ public class Reader {
         return parseScores(readFile(file));
     }
 
-    // EFFECTS: returns the saved board from the file; throws IOException if it encounters one when opening
-    //          or reading the file
-    public static ArrayList<ArrayList<String>> readBoard(File file) throws IOException {
-        return new ArrayList<>();
+    // EFFECTS: returns an individual column of the saved board from the file; throws IOException if it
+    //          encounters one when opening or reading the file
+    public static ArrayList<String> readColumn(File file) throws IOException {
+        return parseColumn(readFile(file));
     }
 
     // EFFECTS: returns the saved dimensions and time data from file; throws IOException if it encounters one
@@ -46,12 +46,6 @@ public class Reader {
 
     // EFFECTS: returns the board in the form of a list
     private static ArrayList<String> parseColumn(List<String> fileContent) {
-        ArrayList<String> column = new ArrayList<>();
-
-        for (String s : fileContent) {
-            column.add(s);
-        }
-
-        return column;
+        return new ArrayList<>(fileContent);
     }
 }

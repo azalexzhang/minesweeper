@@ -27,19 +27,14 @@ class LeaderboardTest {
                     "./data/testAddScoreToLeaderboardNotFull.txt");
             testScores = leaderboard.getLeaderboard();
 
-            List<Long> expected = new ArrayList<>();
-            expected.add((long) 60);
-            expected.add((long) 61);
-            expected.add((long) 65);
-            expected.add((long) 73);
-            expected.add((long) 78);
-            expected.add((long) 80);
+            List<Double> expected = new ArrayList<>();
+            expected.add(60.0);
+            expected.add(61.0);
+            expected.add(65.0);
+            expected.add(73.0);
+            expected.add(78.0);
+            expected.add(80.0);
             assertEquals(expected, testScores);
-
-            testScores = new ArrayList<>();
-            leaderboard.addScoreToLeaderboard(61,
-                    "./data/testAddScoreToLeaderboardNotFull.txt");
-            testScores = leaderboard.getLeaderboard();
         } catch (IOException e) {
             fail("Unexpected IOException\n" + e);
         }
@@ -47,7 +42,7 @@ class LeaderboardTest {
 
     @Test
     void testAddScoreToLeaderboardFull() {
-        long testScore = 70;
+        double testScore = 70;
 
         try {
             leaderboard.addScoreToLeaderboard(testScore,
@@ -57,17 +52,17 @@ class LeaderboardTest {
             fail("Unexpected IOException\n" + e);
         }
 
-        List<Long> expected = new ArrayList<>();
-        expected.add((long) 48);
-        expected.add((long) 54);
-        expected.add((long) 61);
-        expected.add((long) 62);
-        expected.add((long) 69);
-        expected.add((long) 70);
-        expected.add((long) 73);
-        expected.add((long) 81);
-        expected.add((long) 82);
-        expected.add((long) 84);
+        List<Double> expected = new ArrayList<>();
+        expected.add(48.0);
+        expected.add(54.0);
+        expected.add(61.0);
+        expected.add(62.0);
+        expected.add(69.0);
+        expected.add(70.0);
+        expected.add(73.0);
+        expected.add(81.0);
+        expected.add(82.0);
+        expected.add(84.0);
         assertEquals(expected, testScores);
     }
 }
