@@ -23,9 +23,9 @@ class ReaderTest {
                     Reader.readColumn(new File("./data/testColumnReaderFile.txt"));
             assertEquals("false,true,false", testColumn.get(0));
             assertEquals("false,true,false", testColumn.get(1));
-            assertEquals("false,false,false", testColumn.get(0));
-            assertEquals("false,false,false", testColumn.get(0));
-            assertEquals("false,true,false", testColumn.get(0));
+            assertEquals("false,false,false", testColumn.get(2));
+            assertEquals("false,false,false", testColumn.get(3));
+            assertEquals("false,true,false", testColumn.get(4));
         } catch (IOException e) {
             fail("Unexpected IOException\n" + e);
         }
