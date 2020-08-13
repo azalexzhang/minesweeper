@@ -3,6 +3,7 @@ package model;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.io.IOException;
 import java.util.Random;
 
 import static model.Board.*;
@@ -24,26 +25,64 @@ public class BoardTest {
 
         board.generateBoard();
         // check that the number of mines is equal to NUMBER_OF_MINES
-        for (int i = 0; i < X_DIMENSION; i++) {
-            for (int j = 0; j < Y_DIMENSION; j++) {
-                if (board.getMineStatusByCoordinates(i, j)) {
-                    mines++;
-                }
-            }
-        }
+        mines = getBoardMines(mines);
 
         assertEquals(NUMBER_OF_MINES, mines);
     }
 
     @Test
     void testDimensions() {
-        try {
-            board.generateBoard();
-        } catch (Exception e) {
-            fail("Unexpected exception thrown while generating board");
-        }
+        board.generateBoard();
         assertEquals(X_DIMENSION, board.getXDimension());
         assertEquals(Y_DIMENSION, board.getYDimension());
+    }
+
+    @Test
+    void testLoadBoard() {
+        try {
+            board.generateBoard();
+            board.saveBoard(1000000000.0,
+                    "./data/testSave/dimensionsAndTime.txt",
+                    "./data/testSave/testColumn");
+            double testTime = board.loadBoard("./data/testSave/dimensionsAndTime.txt",
+                    "/data/testSave/testColumn");
+            assertEquals(1000000000.0, testTime);
+            assertEquals(X_DIMENSION, board.getBoard().size());
+            assertEquals(Y_DIMENSION, board.getBoard().get(0).size());
+            assertEquals(NUMBER_OF_MINES, getBoardMines(0));
+        } catch (IOException e) {
+            fail("Unexpected IOException\n" + e);
+        }
+    }
+
+    @Test
+    void testLoadBoardNonexistentDimensionsAndTimeDataFile() {
+        try {
+            board.generateBoard();
+            board.saveBoard(0,
+                    "./data/testSave/dimensionsAndTime.txt",
+                    "./data/testSave/testColumn");
+            double testTime = board.loadBoard("./data/testSave/thisFileDoesNotExist.txt",
+                    "./data/testSave/testColumn");
+            assertEquals(0, testTime);
+        } catch (IOException e) {
+            fail("Unexpected IOException\n" + e);
+        }
+    }
+
+    @Test
+    void testLoadBoardNonexistentColumnFiles() {
+        try {
+            board.generateBoard();
+            board.saveBoard(0,
+                    "./data/testSave/dimensionsAndTime.txt",
+                    "./data/testSave/testColumn");
+            double testTime = board.loadBoard("./data/testSave/dimensionsAndTimeData.txt",
+                    "./data/testSave/thisFileDoesNotExist");
+            assertEquals(0, testTime);
+        } catch (IOException e) {
+            fail("Unexpected IOException\n" + e);
+        }
     }
 
     @Test
@@ -162,7 +201,7 @@ public class BoardTest {
         }
     }
 
-    int loopOverAdjacentMines(Board board, int x, int y, int mines) {
+    private int loopOverAdjacentMines(Board board, int x, int y, int mines) {
         for (int dx = -1; dx <= 1; dx++) {
             for (int dy = -1; dy <= 1; dy++) {
                 if (dx == 0 && dy == 0) {
@@ -181,10 +220,26 @@ public class BoardTest {
         return mines;
     }
 
+    private int getBoardMines(int mines) {
+        for (int i = 0; i < X_DIMENSION; i++) {
+            for (int j = 0; j < Y_DIMENSION; j++) {
+                if (board.getMineStatusByCoordinates(i, j)) {
+                    mines++;
+                }
+            }
+        }
+        return mines;
+    }
+
     @Test
     void testFlagSquare() {
         board.generateBoard();
         board.flagSquare(0, 0);
         assertTrue(board.getFlaggedStatusByCoordinates(0, 0));
+        board.flagSquare(0, 0);
+        assertFalse(board.getFlaggedStatusByCoordinates(0, 0));
+        board.uncoverSquare(0, 0);
+        board.flagSquare(0, 0);
+        assertFalse(board.getFlaggedStatusByCoordinates(0, 0));
     }
 }

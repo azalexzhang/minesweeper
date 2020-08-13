@@ -45,6 +45,14 @@ What I ended up doing was not very cohesive, and I ended up copying a line like 
 I wanted the font size of the text in the buttons and the text areas to be consistent, so I eventually
 extracted two methods, one for JButtons, and one for JTextAreas, so that if I wanted to change the font size
 for all of them at once, I would only need to change two values.
+- There was some duplicate code in the methods displayGameWonMessage and displayGameLostMessage, so I
+extracted the method makeDialogBox. There might be a way to make it simpler since there is still duplicate
+code in those two methods. (The if statement in displayGameWonMessage is making it tough to figure out.)
+- Initially I used the fields X_DIMENSION and Y_DIMENSION in the constructor for GraphicalBoard, but now I
+have two private fields and two new int parameters x and y passed to the constructor. This will especially
+help if I want to implement difficulty levels.
+- Not necessarily related to cohesion and coupling, but I finally fixed LeaderboardTest.java. It now
+rewrites the original test scores back to the test files so that the tests can pass every time they are run.
 
 ## Instructions for Grader (Phase 3)
 - You can generate the first required event by clicking a button on the main menu. Click the button "View

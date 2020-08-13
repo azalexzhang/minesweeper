@@ -41,8 +41,8 @@ public class GridSquare extends JComponent {
     private boolean containsMine;
     private boolean flagged;
 
-    // EFFECTS: constructs a covered, un-flagged square in the grid with x-coordinate, y-coordinate, number of
-    //          adjacent mines and status of whether or not it contains a mine
+    // EFFECTS: constructs a covered, un-flagged square in the grid with x-coordinate, y-coordinate, number
+    //          of adjacent mines and status of whether or not it contains a mine
     public GridSquare(int x, int y, int adjacentMines, boolean containsMine, Observer observer) {
         this.xx = x;
         this.yy = y;

@@ -54,11 +54,6 @@ public class GraphicalBoard extends JPanel implements Observer {
     // EFFECTS: updates the graphics of the board based on the mouse event received
     @Override
     public void update(Observable o, Object arg) {
-        /*
-        System.err.println("update");
-        System.err.println(((MouseEvent) arg).getModifiers());
-        System.err.println(((Listener) o).getX() + " " +  ((Listener) o).getY());
-        */
         if (SwingUtilities.isLeftMouseButton((MouseEvent) arg)) {
             // update with new uncovered squares
             board.uncoverSquare(((Listener) o).getX(), ((Listener) o).getY());

@@ -54,8 +54,9 @@ public class Board {
     }
 
     // EFFECTS: saves the current board to file
-    public void saveBoard(double timeElapsedSoFar) throws IOException {
-        Writer writer = new Writer(new File(DIMENSIONS_TIME_FILE));
+    public void saveBoard(double timeElapsedSoFar, String dimensionsTimeFile, String columnFile)
+            throws IOException {
+        Writer writer = new Writer(new File(dimensionsTimeFile));
 
         writer.write(X_DIMENSION);
         writer.write(Y_DIMENSION);
@@ -63,7 +64,7 @@ public class Board {
         writer.close();
 
         for (ArrayList<Square> column : board) {
-            writer = new Writer(new File(COLUMN_FILE + board.indexOf(column) + ".txt"));
+            writer = new Writer(new File(columnFile + board.indexOf(column) + ".txt"));
             for (Square square : column) {
                 String containsMine = String.valueOf(square.getContainsMine());
                 String covered = String.valueOf(square.getCoveredStatus());
@@ -75,8 +76,8 @@ public class Board {
     }
 
     // EFFECTS: loads board from file
-    public double loadBoard() throws IOException {
-        File file = new File(DIMENSIONS_TIME_FILE);
+    public double loadBoard(String dimensionsTimeFile, String columnFile) throws IOException {
+        File file = new File(dimensionsTimeFile);
 
         if (file.exists()) {
             List<String> dimensionsAndTimeData = readDimensionsAndTimeData(file);
@@ -86,7 +87,7 @@ public class Board {
 
             for (int i = 0; i < x; i++) {
                 ArrayList<Square> column = new ArrayList<>();
-                file = new File(COLUMN_FILE + i + ".txt");
+                file = new File(columnFile + i + ".txt");
 
                 if (file.exists()) {
                     ArrayList<String> savedColumn = readColumn(file);
@@ -274,6 +275,10 @@ public class Board {
     // EFFECTS: returns true if square with given coordinates is flagged; false otherwise
     public boolean getFlaggedStatusByCoordinates(int x, int y) {
         return this.getSquareByCoordinates(x, y).getFlaggedStatus();
+    }
+
+    public ArrayList<ArrayList<Square>> getBoard() {
+        return board;
     }
 
     // Represents an individual square on the board.

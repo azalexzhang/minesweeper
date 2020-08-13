@@ -12,8 +12,7 @@ import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Observer;
 
-import static model.Board.X_DIMENSION;
-import static model.Board.Y_DIMENSION;
+import static model.Board.*;
 
 public class GraphicalRunner extends JFrame implements ActionListener, Observer {
     private GraphicalBoard graphicalBoard;
@@ -104,7 +103,7 @@ public class GraphicalRunner extends JFrame implements ActionListener, Observer 
     // EFFECTS: loads a previously saved game.
     private void loadGame() throws IOException {
         board = new Board();
-        savedTime = board.loadBoard();
+        savedTime = board.loadBoard(DIMENSIONS_TIME_FILE, COLUMN_FILE);
 
         if (savedTime == 0) {
             handleLoadGameFailed();
@@ -134,7 +133,7 @@ public class GraphicalRunner extends JFrame implements ActionListener, Observer 
         try {
             double endTime = System.nanoTime();
             savedTime += endTime - startTime;
-            board.saveBoard(savedTime);
+            board.saveBoard(savedTime, DIMENSIONS_TIME_FILE, COLUMN_FILE);
         } catch (IOException exception) {
             exception.printStackTrace();
         }
@@ -203,7 +202,6 @@ public class GraphicalRunner extends JFrame implements ActionListener, Observer 
                     loadGame();
                 } catch (Exception exception) {
                     handleLoadGameFailed();
-                    exception.printStackTrace();
                 }
                 break;
             case "View Leaderboard":
@@ -276,23 +274,16 @@ public class GraphicalRunner extends JFrame implements ActionListener, Observer 
     // EFFECTS: displays a dialog indicating the game is won
     private void displayGameWonMessage(double timeElapsed) {
         JTextArea textArea = new JTextArea();
-        setTextAreaFont(textArea);
-        textArea.setEditable(false);
+        JButton button = new JButton("OK");
+
+        makeDialogBox(textArea, button);
+
         textArea.append("You win!\nYour time is: " + timeElapsed + " seconds\n");
         if (leaderboard.getLeaderboardIndex(leaderboard.getLeaderboard(), timeElapsed) != -1) {
             textArea.append("NEW HIGH SCORE! You ranked #"
                     + leaderboard.getLeaderboardIndex(leaderboard.getLeaderboard(), timeElapsed)
                     + ".");
         }
-
-        JButton button = new JButton("OK");
-        setButtonFont(button);
-        button.addActionListener(e -> {
-            remove(button);
-            remove(textArea);
-            displayMainMenu();
-            repaint();
-        });
 
         add(textArea);
         add(button, BorderLayout.PAGE_END);
@@ -302,10 +293,21 @@ public class GraphicalRunner extends JFrame implements ActionListener, Observer 
     // EFFECTS: displays a dialog indicating the game is lost
     private void displayGameLostMessage() {
         JTextArea textArea = new JTextArea();
+        JButton button = new JButton("OK");
+
+        makeDialogBox(textArea, button);
+
+        textArea.append("Game over!");
+
+        add(textArea);
+        add(button, BorderLayout.PAGE_END);
+        pack();
+    }
+
+    // EFFECTS: creates the dialog box with text indicating if the game is won or lost
+    private void makeDialogBox(JTextArea textArea, JButton button) {
         setTextAreaFont(textArea);
         textArea.setEditable(false);
-        textArea.append("Game over!");
-        JButton button = new JButton("OK");
         setButtonFont(button);
         button.addActionListener(e -> {
             remove(button);
@@ -313,9 +315,5 @@ public class GraphicalRunner extends JFrame implements ActionListener, Observer 
             displayMainMenu();
             repaint();
         });
-
-        add(textArea);
-        add(button, BorderLayout.PAGE_END);
-        pack();
     }
 }
