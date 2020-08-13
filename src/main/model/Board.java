@@ -13,9 +13,18 @@ import static persistence.Reader.readDimensionsAndTimeData;
 
 // Represents a Minesweeper board.
 public class Board {
-    public static final int X_DIMENSION = 24;
-    public static final int Y_DIMENSION = 24;
-    public static final int NUMBER_OF_MINES = 100;
+    public static final int X_DIMENSION_EASY = 9;
+    public static final int Y_DIMENSION_EASY = 9;
+    public static final int NUMBER_OF_MINES_EASY = 10;
+
+    public static final int X_DIMENSION_MEDIUM = 16;
+    public static final int Y_DIMENSION_MEDIUM = 16;
+    public static final int NUMBER_OF_MINES_MEDIUM = 40;
+
+    public static final int X_DIMENSION_HARD = 24;
+    public static final int Y_DIMENSION_HARD = 24;
+    public static final int NUMBER_OF_MINES_HARD = 100;
+
     public static final String DIMENSIONS_TIME_FILE = "./data/save/dimensionsAndTime.txt";
     public static final String COLUMN_FILE = "./data/save/column";
     public static final String DELIMITER = ",";
@@ -30,36 +39,36 @@ public class Board {
 
     // MODIFIES: this
     // EFFECTS: generates new board of dimensions X_DIMENSION by Y_DIMENSION
-    public void generateBoard() {
+    public void generateBoard(int x, int y, int mines) {
         Random random = new Random();
 
-        for (int j = 0; j < X_DIMENSION; j++) {
+        for (int j = 0; j < x; j++) {
             ArrayList<Square> arr = new ArrayList<>();
-            for (int k = 0; k < Y_DIMENSION; k++) {
+            for (int k = 0; k < y; k++) {
                 arr.add(new Square(false, true, false));
             }
 
             board.add(arr);
         }
 
-        for (int i = 1; i <= NUMBER_OF_MINES; i++) {
-            int x = random.nextInt(X_DIMENSION);
-            int y = random.nextInt(Y_DIMENSION);
-            while (this.getSquareByCoordinates(x, y).getContainsMine()) {
-                x = random.nextInt(X_DIMENSION);
-                y = random.nextInt(Y_DIMENSION);
+        for (int i = 1; i <= mines; i++) {
+            int xxCoord = random.nextInt(x);
+            int yyCoord = random.nextInt(y);
+            while (this.getSquareByCoordinates(xxCoord, yyCoord).getContainsMine()) {
+                xxCoord = random.nextInt(x);
+                yyCoord = random.nextInt(y);
             }
-            this.getSquareByCoordinates(x, y).setContainsMine();
+            this.getSquareByCoordinates(xxCoord, yyCoord).setContainsMine();
         }
     }
 
     // EFFECTS: saves the current board to file
-    public void saveBoard(double timeElapsedSoFar, String dimensionsTimeFile, String columnFile)
+    public void saveBoard(double timeElapsedSoFar, int x, int y, String dtFile, String columnFile)
             throws IOException {
-        Writer writer = new Writer(new File(dimensionsTimeFile));
+        Writer writer = new Writer(new File(dtFile));
 
-        writer.write(X_DIMENSION);
-        writer.write(Y_DIMENSION);
+        writer.write(x);
+        writer.write(y);
         writer.write(timeElapsedSoFar);
         writer.close();
 
@@ -75,7 +84,8 @@ public class Board {
         }
     }
 
-    // EFFECTS: loads board from file
+    // EFFECTS: loads board from file and returns time elapsed so far; returns 0 if there is no saved
+    //          board
     public double loadBoard(String dimensionsTimeFile, String columnFile) throws IOException {
         File file = new File(dimensionsTimeFile);
 
@@ -144,10 +154,10 @@ public class Board {
                 }
                 int nextX = x + dx;
                 int nextY = y + dy;
-                if (nextX < 0 || nextX >= X_DIMENSION) {
+                if (nextX < 0 || nextX >= X_DIMENSION_EASY) {
                     continue;
                 }
-                if (nextY < 0 || nextY >= Y_DIMENSION) {
+                if (nextY < 0 || nextY >= Y_DIMENSION_EASY) {
                     continue;
                 }
                 if (board.get(nextX).get(nextY).covered) {
@@ -168,10 +178,10 @@ public class Board {
                 }
                 int nextX = x + dx;
                 int nextY = y + dy;
-                if (nextX < 0 || nextX >= X_DIMENSION) {
+                if (nextX < 0 || nextX >= X_DIMENSION_EASY) {
                     continue;
                 }
-                if (nextY < 0 || nextY >= Y_DIMENSION) {
+                if (nextY < 0 || nextY >= Y_DIMENSION_EASY) {
                     continue;
                 }
                 if (board.get(nextX).get(nextY).containsMine) {
@@ -193,10 +203,10 @@ public class Board {
                 }
                 int nextX = x + dx;
                 int nextY = y + dy;
-                if (nextX < 0 || nextX >= X_DIMENSION) {
+                if (nextX < 0 || nextX >= X_DIMENSION_EASY) {
                     continue;
                 }
-                if (nextY < 0 || nextY >= Y_DIMENSION) {
+                if (nextY < 0 || nextY >= Y_DIMENSION_EASY) {
                     continue;
                 }
                 if (board.get(nextX).get(nextY).containsMine) {
@@ -219,8 +229,8 @@ public class Board {
     // EFFECTS: checks board to see if all squares (besides the ones containing mines) are uncovered
     public boolean gameWon() {
         int uncovered = 0;
-        for (int j = Y_DIMENSION - 1; j >= 0; j--) {
-            for (int i = 0; i < X_DIMENSION; i++) {
+        for (int j = Y_DIMENSION_EASY - 1; j >= 0; j--) {
+            for (int i = 0; i < X_DIMENSION_EASY; i++) {
                 if (!this.getCoveredStatusByCoordinates(i, j)) {
                     if (this.getMineStatusByCoordinates(i, j)) {
                         return false;
@@ -231,13 +241,13 @@ public class Board {
             }
         }
 
-        return uncovered == X_DIMENSION * Y_DIMENSION - NUMBER_OF_MINES;
+        return uncovered == X_DIMENSION_EASY * Y_DIMENSION_EASY - NUMBER_OF_MINES_EASY;
     }
 
     // EFFECTS: checks board to see if any square containing a mine is uncovered
     public boolean gameLost() {
-        for (int i = 0; i < X_DIMENSION; i++) {
-            for (int j = 0; j < Y_DIMENSION; j++) {
+        for (int i = 0; i < X_DIMENSION_EASY; i++) {
+            for (int j = 0; j < Y_DIMENSION_EASY; j++) {
                 if (this.getMineStatusByCoordinates(i, j) && !this.getCoveredStatusByCoordinates(i, j)) {
                     return true;
                 }

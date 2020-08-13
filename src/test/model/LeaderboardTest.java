@@ -25,12 +25,12 @@ class LeaderboardTest {
     void testAddScoreToLeaderboardNotFull() {
         try {
             leaderboard.addScoreToLeaderboard(80,
-                    "./data/testAddScoreToLeaderboardNotFull.txt");
+                    "./data/tests/testAddScoreToLeaderboardNotFull.txt");
             testScores = leaderboard.getLeaderboard();
 
             Double[] originalScores = {60.0, 61.0, 65.0, 73.0, 78.0};
             leaderboard.writeScoresToFile(Arrays.asList(originalScores),
-                    "./data/testAddScoreToLeaderboardNotFull.txt");
+                    "./data/tests/testAddScoreToLeaderboardNotFull.txt");
 
             Double[] expected = {60.0, 61.0, 65.0, 73.0, 78.0, 80.0};
             assertEquals(Arrays.asList(expected), testScores);
@@ -43,18 +43,18 @@ class LeaderboardTest {
     void testAddScoreToLeaderboardFull() {
         try {
             leaderboard.addScoreToLeaderboard(70.0,
-                    "./data/testAddScoreToLeaderboardFull.txt");
+                    "./data/tests/testAddScoreToLeaderboardFull.txt");
             testScores = leaderboard.getLeaderboard();
 
             Double[] originalScores = {48.0, 54.0, 61.0, 62.0, 69.0, 73.0, 81.0, 82.0, 84.0, 89.0};
             leaderboard.writeScoresToFile(Arrays.asList(originalScores),
-                    "./data/testAddScoreToLeaderboardFull.txt");
+                    "./data/tests/testAddScoreToLeaderboardFull.txt");
 
             Double[] expected1 = {48.0, 54.0, 61.0, 62.0, 69.0, 70.0, 73.0, 81.0, 82.0, 84.0};
             assertEquals(Arrays.asList(expected1), testScores);
 
             leaderboard.addScoreToLeaderboard(90.0,
-                    "./data/testAddScoreToLeaderboardFull.txt");
+                    "./data/tests/testAddScoreToLeaderboardFull.txt");
             testScores = leaderboard.getLeaderboard();
 
             assertEquals(Arrays.asList(originalScores), testScores);

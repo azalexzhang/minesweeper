@@ -21,6 +21,7 @@ public class GraphicalRunner extends JFrame implements ActionListener, Observer 
     private Leaderboard leaderboard;
     private JTextArea instructionArea;
     private JPanel buttonPanel;
+    private JButton saveButton;
     private double startTime;
     private double savedTime;
 
@@ -28,6 +29,7 @@ public class GraphicalRunner extends JFrame implements ActionListener, Observer 
     public GraphicalRunner() {
         super("Minesweeper");
         setLayout(new BorderLayout());
+        setResizable(false);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         board = null;
         leaderboard = new Leaderboard();
@@ -87,14 +89,14 @@ public class GraphicalRunner extends JFrame implements ActionListener, Observer 
         textArea.append("- Hover your mouse over the square you want to modify. Left click to uncover"
                 + " it. Right click to flag it.\n");
         textArea.append("- If you manage to clear all squares that don't hold a mine, you win the game."
-                + " If you uncover a square that holds a mine, however, the game is over!");
+                + "\n- If you uncover a square that holds a mine, however, the game is over!");
         return textArea;
     }
 
     // EFFECTS: runs a Minesweeper game
-    private void runGame() {
+    private void runGame(int x, int y, int mines) {
         board = new Board();
-        board.generateBoard();
+        board.generateBoard(x, y, mines);
         savedTime = 0;
         startTime = System.nanoTime();
         initGame(startTime, savedTime);
@@ -113,13 +115,63 @@ public class GraphicalRunner extends JFrame implements ActionListener, Observer 
         }
     }
 
+    // EFFECTS: displays dialog box choosing difficulty level
+    private void chooseDifficultyLevel() {
+        JTextArea textArea = new JTextArea();
+        setTextAreaFont(textArea);
+        textArea.append("Select a difficulty level:");
+
+        JPanel buttonPanel = new JPanel();
+
+        JButton easyButton = new JButton("Easy");
+        JButton mediumButton = new JButton("Medium");
+        JButton hardButton = new JButton("Hard");
+        makeDifficultyLevelButtons(textArea, buttonPanel, easyButton, mediumButton, hardButton);
+
+        buttonPanel.add(easyButton);
+        buttonPanel.add(mediumButton);
+        buttonPanel.add(hardButton);
+        add(textArea, BorderLayout.PAGE_START);
+        add(buttonPanel, BorderLayout.PAGE_END);
+        pack();
+    }
+
+    // EFFECTS: sets font and action listeners for buttons
+    private void makeDifficultyLevelButtons(JTextArea textArea,
+                                            JPanel buttonPanel,
+                                            JButton easyButton,
+                                            JButton mediumButton,
+                                            JButton hardButton) {
+        setButtonFont(easyButton);
+        setButtonFont(mediumButton);
+        setButtonFont(hardButton);
+
+        easyButton.addActionListener(e -> {
+            remove(textArea);
+            remove(buttonPanel);
+            runGame(X_DIMENSION_EASY, Y_DIMENSION_EASY, NUMBER_OF_MINES_EASY);
+        });
+        mediumButton.addActionListener(e -> {
+            remove(textArea);
+            remove(buttonPanel);
+            runGame(X_DIMENSION_MEDIUM, Y_DIMENSION_MEDIUM, NUMBER_OF_MINES_MEDIUM);
+        });
+        hardButton.addActionListener(e -> {
+            remove(textArea);
+            remove(buttonPanel);
+            runGame(X_DIMENSION_HARD, Y_DIMENSION_HARD, NUMBER_OF_MINES_HARD);
+        });
+    }
+
     // EFFECTS: initializes a Minesweeper game
     private void initGame(double startTime, double savedTime) {
-        graphicalBoard = new GraphicalBoard(board, X_DIMENSION, Y_DIMENSION);
+        graphicalBoard = new GraphicalBoard(board, X_DIMENSION_EASY, Y_DIMENSION_EASY);
         add(graphicalBoard, BorderLayout.PAGE_START);
-        JButton saveButton = new JButton("<html>Save Game and Quit<br>**WARNING: This will overwrite"
-                + "<br>any previously saved game!**</html>");
+        saveButton = new JButton("<html>Save Game and Quit<br>**WARNING: This will overwrite"
+                + " any previously saved game!**</html>");
         setButtonFont(saveButton);
+        saveButton.setPreferredSize(new Dimension(GridSquare.SQUARE_SIZE * X_DIMENSION_EASY,
+                200));
         saveButton.addActionListener(e -> {
             saveBoardAndTimeElapsed(startTime, savedTime);
             dispose();
@@ -133,21 +185,24 @@ public class GraphicalRunner extends JFrame implements ActionListener, Observer 
         try {
             double endTime = System.nanoTime();
             savedTime += endTime - startTime;
-            board.saveBoard(savedTime, DIMENSIONS_TIME_FILE, COLUMN_FILE);
-        } catch (IOException exception) {
-            exception.printStackTrace();
+            board.saveBoard(savedTime,
+                    board.getXDimension(),
+                    board.getYDimension(),
+                    DIMENSIONS_TIME_FILE,
+                    COLUMN_FILE);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
     // EFFECTS: sets the font of the text on the buttons
     private void setButtonFont(JButton button) {
-        // The default font size was too small on my 4K (3840 by 2160 pixels) computer screen.
-        button.setFont(button.getFont().deriveFont(18f));
+        button.setFont(button.getFont().deriveFont(24f));
     }
 
     // EFFECTS: sets the font of the text in text areas
     private void setTextAreaFont(JTextArea textArea) {
-        textArea.setFont(textArea.getFont().deriveFont(18f));
+        textArea.setFont(textArea.getFont().deriveFont(24f));
     }
 
     // EFFECTS: displays graphical leaderboard
@@ -166,6 +221,8 @@ public class GraphicalRunner extends JFrame implements ActionListener, Observer 
             try {
                 // write empty ArrayList to file
                 leaderboard.writeScoresToFile(new ArrayList<>(), Leaderboard.LEADERBOARD_FILE_EASY);
+                leaderboard.writeScoresToFile(new ArrayList<>(), Leaderboard.LEADERBOARD_FILE_MEDIUM);
+                leaderboard.writeScoresToFile(new ArrayList<>(), Leaderboard.LEADERBOARD_FILE_HARD);
             } catch (IOException exception) {
                 exception.printStackTrace();
             }
@@ -195,7 +252,7 @@ public class GraphicalRunner extends JFrame implements ActionListener, Observer 
 
         switch (e.getActionCommand()) {
             case "Play":
-                runGame();
+                chooseDifficultyLevel();
                 break;
             case "Load Game":
                 try {
@@ -228,7 +285,7 @@ public class GraphicalRunner extends JFrame implements ActionListener, Observer 
         setButtonFont(yesButton);
         yesButton.addActionListener(e -> {
             removeLoadGameMessage(noLoadedGameTextArea, yesButton, noButton);
-            runGame();
+            chooseDifficultyLevel();
         });
 
         setButtonFont(noButton);
@@ -258,15 +315,23 @@ public class GraphicalRunner extends JFrame implements ActionListener, Observer 
             double endTime = System.nanoTime();
             double timeElapsed = (endTime - startTime + savedTime) / 1000000000;
             try {
-                leaderboard.addScoreToLeaderboard(timeElapsed, Leaderboard.LEADERBOARD_FILE_EASY);
+                if (board.getXDimension() == X_DIMENSION_EASY && board.getYDimension() == Y_DIMENSION_EASY) {
+                    leaderboard.addScoreToLeaderboard(timeElapsed, Leaderboard.LEADERBOARD_FILE_EASY);
+                } else if (board.getXDimension() == X_DIMENSION_MEDIUM && board.getYDimension() == Y_DIMENSION_MEDIUM) {
+                    leaderboard.addScoreToLeaderboard(timeElapsed, Leaderboard.LEADERBOARD_FILE_MEDIUM);
+                } else if (board.getXDimension() == X_DIMENSION_HARD && board.getYDimension() == Y_DIMENSION_HARD) {
+                    leaderboard.addScoreToLeaderboard(timeElapsed, Leaderboard.LEADERBOARD_FILE_HARD);
+                }
             } catch (IOException e) {
                 e.printStackTrace();
             }
 
             remove(graphicalBoard);
+            remove(saveButton);
             displayGameWonMessage(timeElapsed);
         } else if (board.gameLost()) {
             remove(graphicalBoard);
+            remove(saveButton);
             displayGameLostMessage();
         }
     }

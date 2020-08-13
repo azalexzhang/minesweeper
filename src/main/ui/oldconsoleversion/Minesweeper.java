@@ -120,7 +120,9 @@ public class Minesweeper {
     // EFFECTS: generates a new board
     private void generateNewBoard() {
         try {
-            board.generateBoard();
+            board.generateBoard(X_DIMENSION_EASY,
+                    Y_DIMENSION_EASY,
+                    NUMBER_OF_MINES_EASY);
         } catch (Exception e) {
             System.out.println("ERROR\n" + e);
         }
@@ -129,8 +131,8 @@ public class Minesweeper {
     // EFFECTS: displays board by printing a different character for each square depending on its
     //          properties
     private void displayBoard() {
-        for (int j = Y_DIMENSION - 1; j >= 0; j--) {
-            for (int i = 0; i < X_DIMENSION; i++) {
+        for (int j = Y_DIMENSION_EASY - 1; j >= 0; j--) {
+            for (int i = 0; i < X_DIMENSION_EASY; i++) {
                 printSquareStatus(i, j);
             }
             System.out.print("\n");
@@ -161,7 +163,7 @@ public class Minesweeper {
     //          if a mine is uncovered or if the game has been won, false otherwise)
     private boolean modifySelectedSquare(String uf, int x, int y) {
         if (uf.equals("1")) {
-            if (x >= X_DIMENSION || y >= Y_DIMENSION || x < 0 || y < 0) {
+            if (x >= X_DIMENSION_EASY || y >= Y_DIMENSION_EASY || x < 0 || y < 0) {
                 System.out.println("Invalid input, please try again.\n");
             } else {
                 board.uncoverSquare(x, y);

@@ -11,7 +11,10 @@ import static persistence.Reader.readLeaderboard;
 
 // Represents a leaderboard with high scores
 public class Leaderboard {
-    public static final String LEADERBOARD_FILE_EASY = "./data/leaderboard.txt";
+    public static final String LEADERBOARD_FILE_EASY = "./data/leaderboard/leaderboardEasy.txt";
+    public static final String LEADERBOARD_FILE_MEDIUM = "./data/leaderboard/leaderboardMedium.txt";
+    public static final String LEADERBOARD_FILE_HARD = "./data/leaderboard/leaderboardHard.txt";
+
     private static final int MAX_LEADERBOARD_SIZE = 10;
 
     private List<Double> scores;

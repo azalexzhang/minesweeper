@@ -13,14 +13,14 @@ class ReaderTest {
     void testReadFiles() {
         try {
             List<Double> testScores =
-                    Reader.readLeaderboard(new File("./data/testLeaderboardReaderFile.txt"));
+                    Reader.readLeaderboard(new File("./data/tests/testLeaderboardReaderFile.txt"));
             assertEquals(60, testScores.get(0));
             assertEquals(61, testScores.get(1));
             assertEquals(67, testScores.get(2));
             assertEquals(75, testScores.get(3));
 
             List<String> testColumn =
-                    Reader.readColumn(new File("./data/testColumnReaderFile.txt"));
+                    Reader.readColumn(new File("./data/tests/testColumnReaderFile.txt"));
             assertEquals("false,true,false", testColumn.get(0));
             assertEquals("false,true,false", testColumn.get(1));
             assertEquals("false,false,false", testColumn.get(2));
