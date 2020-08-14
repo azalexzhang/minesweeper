@@ -105,7 +105,7 @@ public class Minesweeper {
 
     private boolean gameControls() {
         boolean gameOver;
-        displayBoard();
+        displayBoard(X_DIMENSION_EASY, Y_DIMENSION_EASY);
         System.out.println("Press 1 to uncover and 2 to flag.");
         String uf = input.next();
         System.out.print("Enter the x-coordinate of the square you want to modify: ");
@@ -130,9 +130,9 @@ public class Minesweeper {
 
     // EFFECTS: displays board by printing a different character for each square depending on its
     //          properties
-    private void displayBoard() {
-        for (int j = Y_DIMENSION_EASY - 1; j >= 0; j--) {
-            for (int i = 0; i < X_DIMENSION_EASY; i++) {
+    private void displayBoard(int x, int y) {
+        for (int i = 0; i < x; i++) {
+            for (int j = 0; j < y; j++) {
                 printSquareStatus(i, j);
             }
             System.out.print("\n");
@@ -168,12 +168,12 @@ public class Minesweeper {
             } else {
                 board.uncoverSquare(x, y);
                 if (board.getMineStatusByCoordinates(x, y)) {
-                    displayBoard();
+                    displayBoard(X_DIMENSION_EASY, Y_DIMENSION_EASY);
                     System.out.println("You detonated a mine.");
                     System.out.println("GAME OVER\n");
                     return true;
                 } else if (board.gameWon()) {
-                    displayBoard();
+                    displayBoard(X_DIMENSION_EASY, Y_DIMENSION_EASY);
                     System.out.println("You win!");
                     return true;
                 }

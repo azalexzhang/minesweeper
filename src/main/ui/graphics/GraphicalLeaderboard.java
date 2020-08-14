@@ -18,9 +18,9 @@ public class GraphicalLeaderboard extends JTextArea {
 
         this.append("HIGH SCORES\n\nEasy\n");
         addScores(LEADERBOARD_FILE_EASY);
-        this.append("Medium\n");
+        this.append("\nMedium\n");
         addScores(LEADERBOARD_FILE_MEDIUM);
-        this.append("Hard\n");
+        this.append("\nHard\n");
         addScores(LEADERBOARD_FILE_HARD);
     }
 
@@ -29,7 +29,7 @@ public class GraphicalLeaderboard extends JTextArea {
         try {
             List<Double> scores = Reader.readLeaderboard(new File(leaderboardFile));
             if (scores.size() == 0) {
-                this.append("There are no high scores to display for this difficulty mode.");
+                this.append("There are no high scores to display for this difficulty mode.\n\n");
             } else {
                 for (double s : scores) {
                     this.append((scores.indexOf(s) + 1) + ". " + s + " seconds\n");

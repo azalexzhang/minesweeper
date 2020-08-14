@@ -17,12 +17,19 @@ public class GraphicalBoard extends JPanel implements Observer {
     private int yy;
 
     // EFFECTS: constructs a graphical board
-    public GraphicalBoard(Board board, int x, int y) {
+    public GraphicalBoard(Board board) {
         this.grid = new ArrayList<>();
         this.board = board;
-        this.xx = x;
-        this.yy = y;
+        this.xx = board.getXDimension();
+        this.yy = board.getYDimension();
         setLayout(null);
+        setPreferredSize(new Dimension(xx * GridSquare.SQUARE_SIZE,
+                yy * GridSquare.SQUARE_SIZE));
+    }
+
+    // MODIFIES: this
+    // EFFECTS: generates new graphical board
+    public void generateGraphicalBoard() {
         for (int i = 0; i < xx; i++) {
             ArrayList<GridSquare> arr = new ArrayList<>();
             for (int j = 0; j < yy; j++) {
@@ -36,8 +43,6 @@ public class GraphicalBoard extends JPanel implements Observer {
             }
             grid.add(arr);
         }
-        setPreferredSize(new Dimension(xx * GridSquare.SQUARE_SIZE,
-                yy * GridSquare.SQUARE_SIZE));
     }
 
     // MODIFIES: GridSquare
@@ -49,6 +54,8 @@ public class GraphicalBoard extends JPanel implements Observer {
                 grid.get(i).get(j).setFlagged(board.getFlaggedStatusByCoordinates(i, j));
             }
         }
+
+        displayBoard(xx, yy);
     }
 
     // EFFECTS: updates the graphics of the board based on the mouse event received
@@ -64,5 +71,32 @@ public class GraphicalBoard extends JPanel implements Observer {
 
         updateGridSquares();
         repaint();
+    }
+
+    private void displayBoard(int x, int y) {
+        for (int i = 0; i < x; i++) {
+            for (int j = 0; j < y; j++) {
+                printSquareStatus(i, j);
+            }
+            System.out.print("\n");
+        }
+
+        System.out.println("\n");
+    }
+
+    private void printSquareStatus(int x, int y) {
+        if (board.getCoveredStatusByCoordinates(x, y)) {
+            if (board.getFlaggedStatusByCoordinates(x, y)) {
+                System.out.print("F ");
+            } else {
+                System.out.print(". ");
+            }
+        } else if (board.getMineStatusByCoordinates(x, y)) {
+            System.out.print("X ");
+        } else if (board.getSurroundingMines(x, y) > 0) {
+            System.out.print(board.getSurroundingMines(x, y) + " ");
+        } else {
+            System.out.print("* ");
+        }
     }
 }

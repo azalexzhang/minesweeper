@@ -165,7 +165,8 @@ public class GraphicalRunner extends JFrame implements ActionListener, Observer 
 
     // EFFECTS: initializes a Minesweeper game
     private void initGame(double startTime, double savedTime) {
-        graphicalBoard = new GraphicalBoard(board, X_DIMENSION_EASY, Y_DIMENSION_EASY);
+        graphicalBoard = new GraphicalBoard(board);
+        graphicalBoard.generateGraphicalBoard();
         add(graphicalBoard, BorderLayout.PAGE_START);
         saveButton = new JButton("<html>Save Game and Quit<br>**WARNING: This will overwrite"
                 + " any previously saved game!**</html>");
@@ -210,8 +211,8 @@ public class GraphicalRunner extends JFrame implements ActionListener, Observer 
         graphicalLeaderboard = new GraphicalLeaderboard();
         add(graphicalLeaderboard, BorderLayout.PAGE_START);
         JButton button1 = new JButton("Main Menu");
-        JButton button2 = new JButton("Wipe Leaderboard Data "
-                + "**WARNING: THIS ACTION CANNOT BE UNDONE**");
+        JButton button2 = new JButton("<html><p style='text-align: center'>Wipe Leaderboard Data<br>"
+                + "**WARNING: THIS ACTION CANNOT BE UNDONE**</p></html>");
 
         setButtonFont(button1);
         button1.addActionListener(e -> returnToMainMenuFromLeaderboard(button1, button2));
