@@ -37,6 +37,8 @@ public class GraphicalBoard extends JPanel implements Observer {
                         board.getMineStatusByCoordinates(i, j), this);
                 g.setBounds(i * GridSquare.SQUARE_SIZE, j * GridSquare.SQUARE_SIZE,
                         GridSquare.SQUARE_SIZE, GridSquare.SQUARE_SIZE);
+                g.setCovered(board.getCoveredStatusByCoordinates(i, j));
+                g.setFlagged(board.getFlaggedStatusByCoordinates(i, j));
                 g.repaint();
                 add(g);
                 arr.add(g);
