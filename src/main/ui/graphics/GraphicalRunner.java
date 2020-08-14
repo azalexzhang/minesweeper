@@ -14,6 +14,7 @@ import java.util.Observer;
 
 import static model.Board.*;
 
+// Represents a graphical runner that displays the graphics of the game.
 public class GraphicalRunner extends JFrame implements ActionListener, Observer {
     private GraphicalBoard graphicalBoard;
     private GraphicalLeaderboard graphicalLeaderboard;
