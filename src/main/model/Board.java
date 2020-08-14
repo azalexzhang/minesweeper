@@ -87,8 +87,8 @@ public class Board {
     // EFFECTS: loads board from file and returns time elapsed so far; returns 0 if there is no saved
     //          board
     public double loadBoard(String dimensionsTimeFile, String columnFile) throws IOException {
+        board.clear();
         File file = new File(dimensionsTimeFile);
-
         if (file.exists()) {
             List<String> dimensionsAndTimeData = readDimensionsAndTimeData(file);
             int x = (int) Double.parseDouble(dimensionsAndTimeData.get(0));
@@ -98,24 +98,20 @@ public class Board {
             for (int i = 0; i < x; i++) {
                 ArrayList<Square> column = new ArrayList<>();
                 file = new File(columnFile + i + ".txt");
+                ArrayList<String> savedColumn = readColumn(file);
 
-                if (file.exists()) {
-                    ArrayList<String> savedColumn = readColumn(file);
-
-                    for (String s : savedColumn) {
-                        Square square = new Square(splitString(s).get(0), splitString(s).get(1),
-                                splitString(s).get(2));
-                        column.add(square);
-                    }
-
-                    board.add(column);
-                    file.delete();
+                for (String s : savedColumn) {
+                    Square square = new Square(splitString(s).get(0), splitString(s).get(1),
+                            splitString(s).get(2));
+                    column.add(square);
                 }
+
+                board.add(column);
+                file.delete();
             }
 
             return timeSoFar;
         }
-
         return 0;
     }
 

@@ -3,6 +3,7 @@ package model;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Random;
 
@@ -38,23 +39,6 @@ class BoardTest {
     }
 
     @Test
-    void testLoadBoard() {
-        try {
-            board.generateBoard(X_DIMENSION_EASY, Y_DIMENSION_EASY, NUMBER_OF_MINES_EASY);
-            board.saveBoard(1000000000.0, X_DIMENSION_EASY, Y_DIMENSION_EASY,
-                    "./data/testSave/dimensionsAndTime.txt", "./data/testSave/testColumn");
-            double testTime = board.loadBoard("./data/testSave/dimensionsAndTime.txt",
-                    "/data/testSave/testColumn");
-            assertEquals(1000000000.0, testTime);
-            assertEquals(X_DIMENSION_EASY, board.getBoard().size());
-            assertEquals(Y_DIMENSION_EASY, board.getBoard().get(0).size());
-            assertEquals(NUMBER_OF_MINES_EASY, getBoardMines(0));
-        } catch (IOException e) {
-            fail("Unexpected IOException\n" + e);
-        }
-    }
-
-    @Test
     void testLoadBoardNonexistentDimensionsAndTimeDataFile() {
         try {
             board.generateBoard(X_DIMENSION_EASY, Y_DIMENSION_EASY, NUMBER_OF_MINES_EASY);
@@ -69,6 +53,28 @@ class BoardTest {
     }
 
     @Test
+    void testLoadBoard() {
+        try {
+            board.generateBoard(X_DIMENSION_EASY, Y_DIMENSION_EASY, NUMBER_OF_MINES_EASY);
+            board.saveBoard(1000000000.0, X_DIMENSION_EASY, Y_DIMENSION_EASY,
+                    "./data/testSave/dimensionsAndTime.txt", "./data/testSave/testColumn");
+            double testTime = board.loadBoard("./data/testSave/dimensionsAndTime.txt",
+                    "./data/testSave/testColumn");
+            assertEquals(1000000000.0, testTime);
+            assertEquals(X_DIMENSION_EASY, board.getBoard().size());
+            assertEquals(Y_DIMENSION_EASY, board.getBoard().get(0).size());
+            assertEquals(NUMBER_OF_MINES_EASY, getBoardMines(0));
+            for (File file: new File("./data/testSave").listFiles()) {
+                if (!file.isDirectory()) {
+                    file.delete();
+                }
+            }
+        } catch (IOException e) {
+            fail("Unexpected IOException\n" + e);
+        }
+    }
+
+    @Test
     void testLoadBoardNonexistentColumnFiles() {
         try {
             board.generateBoard(X_DIMENSION_EASY, Y_DIMENSION_EASY, NUMBER_OF_MINES_EASY);
@@ -77,6 +83,11 @@ class BoardTest {
             double testTime = board.loadBoard("./data/testSave/dimensionsAndTimeData.txt",
                     "./data/testSave/thisFileDoesNotExist");
             assertEquals(0, testTime);
+            for (File file: new File("./data/testSave").listFiles()) {
+                if (!file.isDirectory()) {
+                    file.delete();
+                }
+            }
         } catch (IOException e) {
             fail("Unexpected IOException\n" + e);
         }
@@ -86,12 +97,7 @@ class BoardTest {
     void testUncoverBottomCornerSquare() {
         int x = 0;
         int y = 0;
-        board.generateBoard(x, y, x);
-        board.uncoverSquare(x, y);
-        assertFalse(board.getCoveredStatusByCoordinates(x, y));
-        uncoverAllAdjacentSquares(board, x, y);
-
-        x = X_DIMENSION_EASY - 1;
+        board.generateBoard(X_DIMENSION_EASY, Y_DIMENSION_EASY, NUMBER_OF_MINES_EASY);
         board.uncoverSquare(x, y);
         assertFalse(board.getCoveredStatusByCoordinates(x, y));
         uncoverAllAdjacentSquares(board, x, y);
@@ -101,12 +107,7 @@ class BoardTest {
     void testUncoverTopCornerSquare() {
         int x = 0;
         int y = Y_DIMENSION_EASY - 1;
-        board.generateBoard(x, y, x);
-        board.uncoverSquare(x, y);
-        assertFalse(board.getCoveredStatusByCoordinates(x, y));
-        uncoverAllAdjacentSquares(board, x, y);
-
-        x = X_DIMENSION_EASY - 1;
+        board.generateBoard(X_DIMENSION_EASY, Y_DIMENSION_EASY, NUMBER_OF_MINES_EASY);
         board.uncoverSquare(x, y);
         assertFalse(board.getCoveredStatusByCoordinates(x, y));
         uncoverAllAdjacentSquares(board, x, y);
@@ -116,12 +117,7 @@ class BoardTest {
     void testUncoverTopBottomEdgeSquare() {
         int x = X_DIMENSION_EASY / 2;
         int y = 0;
-        board.generateBoard(x, y, x);
-        board.uncoverSquare(x, y);
-        assertFalse(board.getCoveredStatusByCoordinates(x, y));
-        uncoverAllAdjacentSquares(board, x, y);
-
-        y = Y_DIMENSION_EASY - 1;
+        board.generateBoard(X_DIMENSION_EASY, Y_DIMENSION_EASY, NUMBER_OF_MINES_EASY);
         board.uncoverSquare(x, y);
         assertFalse(board.getCoveredStatusByCoordinates(x, y));
         uncoverAllAdjacentSquares(board, x, y);
@@ -131,12 +127,7 @@ class BoardTest {
     void testUncoverLeftRightEdgeSquare() {
         int x = 0;
         int y = Y_DIMENSION_EASY / 2;
-        board.generateBoard(x, y, x);
-        board.uncoverSquare(x, y);
-        assertFalse(board.getCoveredStatusByCoordinates(x, y));
-        uncoverAllAdjacentSquares(board, x, y);
-
-        x = X_DIMENSION_EASY - 1;
+        board.generateBoard(X_DIMENSION_EASY, Y_DIMENSION_EASY, NUMBER_OF_MINES_EASY);
         board.uncoverSquare(x, y);
         assertFalse(board.getCoveredStatusByCoordinates(x, y));
         uncoverAllAdjacentSquares(board, x, y);
@@ -146,7 +137,7 @@ class BoardTest {
     void testUncoverMiddleSquare() {
         int x = X_DIMENSION_EASY / 2;
         int y = Y_DIMENSION_EASY / 2;
-        board.generateBoard(x, y, x);
+        board.generateBoard(X_DIMENSION_EASY, Y_DIMENSION_EASY, NUMBER_OF_MINES_EASY);
         board.uncoverSquare(x, y);
         assertFalse(board.getCoveredStatusByCoordinates(x, y));
         uncoverAllAdjacentSquares(board, x, y);
@@ -154,32 +145,73 @@ class BoardTest {
 
     @Test
     void testGetSurroundingMines() {
-        int mines = 0;
+        int mines;
 
         board.generateBoard(X_DIMENSION_EASY, Y_DIMENSION_EASY, NUMBER_OF_MINES_EASY);
-        mines = loopOverAdjacentMines(board, 0, 0, mines);
+        mines = loopOverAdjacentMines(board, 0, 0);
         assertEquals(mines, board.getSurroundingMines(0, 0));
-        mines = loopOverAdjacentMines(board, X_DIMENSION_EASY - 1, 0, mines);
+        mines = loopOverAdjacentMines(board, X_DIMENSION_EASY - 1, 0);
         assertEquals(mines, board.getSurroundingMines(X_DIMENSION_EASY - 1, 0));
-        mines = loopOverAdjacentMines(board, X_DIMENSION_EASY - 1, Y_DIMENSION_EASY - 1, mines);
+        mines = loopOverAdjacentMines(board, X_DIMENSION_EASY - 1, Y_DIMENSION_EASY - 1);
         assertEquals(mines, board.getSurroundingMines(X_DIMENSION_EASY - 1, Y_DIMENSION_EASY - 1));
-        mines = loopOverAdjacentMines(board, 0, Y_DIMENSION_EASY - 1, mines);
+        mines = loopOverAdjacentMines(board, 0, Y_DIMENSION_EASY - 1);
         assertEquals(mines, board.getSurroundingMines(0, Y_DIMENSION_EASY - 1));
 
-        mines = loopOverAdjacentMines(board, X_DIMENSION_EASY / 2, 0, mines);
+        mines = loopOverAdjacentMines(board, X_DIMENSION_EASY / 2, 0);
         assertEquals(mines, board.getSurroundingMines(X_DIMENSION_EASY / 2, 0));
-        mines = loopOverAdjacentMines(board, X_DIMENSION_EASY / 2, Y_DIMENSION_EASY - 1, mines);
+        mines = loopOverAdjacentMines(board, X_DIMENSION_EASY / 2, Y_DIMENSION_EASY - 1);
         assertEquals(mines, board.getSurroundingMines(X_DIMENSION_EASY / 2, Y_DIMENSION_EASY - 1));
-        mines = loopOverAdjacentMines(board, X_DIMENSION_EASY - 1, Y_DIMENSION_EASY / 2, mines);
+        mines = loopOverAdjacentMines(board, X_DIMENSION_EASY - 1, Y_DIMENSION_EASY / 2);
         assertEquals(mines, board.getSurroundingMines(X_DIMENSION_EASY - 1, Y_DIMENSION_EASY / 2));
-        mines = loopOverAdjacentMines(board, 0, Y_DIMENSION_EASY / 2, mines);
+        mines = loopOverAdjacentMines(board, 0, Y_DIMENSION_EASY / 2);
         assertEquals(mines, board.getSurroundingMines(0, Y_DIMENSION_EASY / 2));
 
-        mines = loopOverAdjacentMines(board, X_DIMENSION_EASY / 2, Y_DIMENSION_EASY / 2, mines);
+        mines = loopOverAdjacentMines(board, X_DIMENSION_EASY / 2, Y_DIMENSION_EASY / 2);
         assertEquals(mines, board.getSurroundingMines(X_DIMENSION_EASY / 2, Y_DIMENSION_EASY / 2));
     }
 
-    void uncoverAllAdjacentSquares(Board board, int x, int y) {
+    @Test
+    void testGameWon() {
+        board.generateBoard(X_DIMENSION_EASY, Y_DIMENSION_EASY, NUMBER_OF_MINES_EASY);
+        assertFalse(board.gameWon());
+
+        for (int x = 0; x < X_DIMENSION_EASY; x++) {
+            for (int y = 0; y < Y_DIMENSION_EASY; y++) {
+                if (!board.getMineStatusByCoordinates(x, y)) {
+                    board.uncoverSquare(x, y);
+                }
+            }
+        }
+
+        assertTrue(board.gameWon());
+
+        for (int x = 0; x < X_DIMENSION_EASY; x++) {
+            for (int y = 0; y < Y_DIMENSION_EASY; y++) {
+                board.uncoverSquare(x, y);
+            }
+        }
+
+        assertFalse(board.gameWon());
+    }
+
+    @Test
+    void testGameLost() {
+        board.generateBoard(X_DIMENSION_EASY, Y_DIMENSION_EASY, NUMBER_OF_MINES_EASY);
+        assertFalse(board.gameLost());
+
+        for (int x = 0; x < X_DIMENSION_EASY; x++) {
+            for (int y = 0; y < Y_DIMENSION_EASY; y++) {
+                board.uncoverSquare(x, y);
+
+                if (board.getMineStatusByCoordinates(x, y)) {
+                    assertTrue(board.gameLost());
+                    break;
+                }
+            }
+        }
+    }
+
+    private void uncoverAllAdjacentSquares(Board board, int x, int y) {
         for (int dx = -1; dx <= 1; dx++) {
             for (int dy = -1; dy <= 1; dy++) {
                 if (dx == 0 && dy == 0) {
@@ -190,7 +222,11 @@ class BoardTest {
                 if (!(nextX < 0 || nextX >= X_DIMENSION_EASY || nextY < 0 || nextY >= Y_DIMENSION_EASY)) {
                     if (board.allAdjacentSquaresNoMine(x, y) && !board.getMineStatusByCoordinates(x, y)) {
                         assertFalse(board.getCoveredStatusByCoordinates(nextX, nextY));
-                    } else {
+                    } else if (!board.getMineStatusByCoordinates(x, y)) {
+                        if (!board.getCoveredStatusByCoordinates(nextX, nextY)) {
+                            displayBoard(X_DIMENSION_EASY, Y_DIMENSION_EASY);
+                            System.err.println(x + " " + y);
+                        }
                         assertTrue(board.getCoveredStatusByCoordinates(nextX, nextY));
                     }
                 }
@@ -198,7 +234,35 @@ class BoardTest {
         }
     }
 
-    private int loopOverAdjacentMines(Board board, int x, int y, int mines) {
+    private void displayBoard(int x, int y) {
+        for (int i = 0; i < x; i++) {
+            for (int j = 0; j < y; j++) {
+                printSquareStatus(i, j);
+            }
+            System.out.print("\n");
+        }
+
+        System.out.println("\n");
+    }
+
+    private void printSquareStatus(int x, int y) {
+        if (board.getCoveredStatusByCoordinates(x, y)) {
+            if (board.getFlaggedStatusByCoordinates(x, y)) {
+                System.out.print("F ");
+            } else {
+                System.out.print(". ");
+            }
+        } else if (board.getMineStatusByCoordinates(x, y)) {
+            System.out.print("X ");
+        } else if (board.getSurroundingMines(x, y) > 0) {
+            System.out.print(board.getSurroundingMines(x, y) + " ");
+        } else {
+            System.out.print("* ");
+        }
+    }
+
+    private int loopOverAdjacentMines(Board board, int x, int y) {
+        int mines = 0;
         for (int dx = -1; dx <= 1; dx++) {
             for (int dy = -1; dy <= 1; dy++) {
                 if (dx == 0 && dy == 0) {
