@@ -28,7 +28,7 @@ the game is won.)
 - As a user, I want to be able to view the leaderboard.
 - As a user, I want to be able to erase all data from the leaderboard.
 
-**Phase 4: Task 2**
+**Phase 4: Task 2**  
 Reader is a class in which some of the methods throw a checked exception (Java's built-in IOException for
 all of them).
 
@@ -62,4 +62,4 @@ completely erase all leaderboard data by clicking the button "Wipe Leaderboard D
 - You can locate my visual component by starting the game. Click "Play Game" in the main menu. The board is
 a grid of PNG files representing the state of each square on the board.
 - You can save the state of my application by clicking the "Save Game" button while playing a game.
-- You can reload the state of my application by clicking the "Load Game" button from the main menu.
+- You can reload the state of my application by clicking the "Load Game" button from the main menu."# minesweeper" 
