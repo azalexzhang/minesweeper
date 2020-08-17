@@ -173,7 +173,7 @@ public class GraphicalRunner extends JFrame implements ActionListener, Observer 
                 + " any previously saved game!**</html>");
         setButtonFont(saveButton);
         saveButton.setPreferredSize(new Dimension(GridSquare.SQUARE_SIZE * X_DIMENSION_EASY,
-                200));
+                160));
         saveButton.addActionListener(e -> {
             saveBoardAndTimeElapsed(startTime, savedTime);
             dispose();

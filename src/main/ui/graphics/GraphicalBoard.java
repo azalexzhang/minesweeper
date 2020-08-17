@@ -56,8 +56,6 @@ public class GraphicalBoard extends JPanel implements Observer {
                 grid.get(i).get(j).setFlagged(board.getFlaggedStatusByCoordinates(i, j));
             }
         }
-
-        displayBoard(xx, yy);
     }
 
     // EFFECTS: updates the graphics of the board based on the mouse event received
@@ -73,32 +71,5 @@ public class GraphicalBoard extends JPanel implements Observer {
 
         updateGridSquares();
         repaint();
-    }
-
-    private void displayBoard(int x, int y) {
-        for (int i = 0; i < x; i++) {
-            for (int j = 0; j < y; j++) {
-                printSquareStatus(i, j);
-            }
-            System.out.print("\n");
-        }
-
-        System.out.println("\n");
-    }
-
-    private void printSquareStatus(int x, int y) {
-        if (board.getCoveredStatusByCoordinates(x, y)) {
-            if (board.getFlaggedStatusByCoordinates(x, y)) {
-                System.out.print("F ");
-            } else {
-                System.out.print(". ");
-            }
-        } else if (board.getMineStatusByCoordinates(x, y)) {
-            System.out.print("X ");
-        } else if (board.getSurroundingMines(x, y) > 0) {
-            System.out.print(board.getSurroundingMines(x, y) + " ");
-        } else {
-            System.out.print("* ");
-        }
     }
 }
