@@ -11,7 +11,7 @@ import java.util.Random;
 import static persistence.Reader.readColumn;
 import static persistence.Reader.readDimensionsAndTimeData;
 
-// Represents a Minesweeper board
+// Represents a Minesweeper board.
 public class Board {
     public static final int X_DIMENSION_EASY = 9;
     public static final int Y_DIMENSION_EASY = 9;
