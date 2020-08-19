@@ -2,6 +2,8 @@
 
 ## Alex Zhang
 
+[![Run on Repl.it](https://repl.it/badge/github/azalexzhang/minesweeper)](https://repl.it/github/azalexzhang/minesweeper)
+
 **Overview**  
 This project intends to re-create the classic Minesweeper game. The object of the game is to clear a board
 with individual squares, without hitting a square containing a mine. Each individual square will contain an

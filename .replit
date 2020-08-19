@@ -1,0 +1,2 @@
+language = "java10"
+run = "\"runner = new GraphicalRunner();\"runner = new GraphicalRunner();"
